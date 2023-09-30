@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('nombre', 100);
             $table->string('referencia')->nullable();
             $table->string('link')->nullable();
-            $table->decimal('latitud', 7,8);
-            $table->decimal('longitud', 7,8);
+            $table->decimal('latitud', 7,7);
+            $table->decimal('longitud', 7,7);
 
             $table->unsignedBigInteger("cliente_id");
             $table->foreign('cliente_id')->on('users')->references('id')->onDelete('cascade');
