@@ -18,13 +18,13 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->string('ci', 11)->nullable();
             $table->string('telefono', 8)->nullable();
             $table->text('foto_cliente')->nullable();
             $table->string('razon_social')->nullable();
             $table->string('codigo_empleado')->nullable();
+            $table->string('tipo_usuario')->nullable(); //A-C-R
 
             $table->timestamps();
         });
