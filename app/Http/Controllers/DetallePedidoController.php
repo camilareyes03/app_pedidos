@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetallePedido;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 
 class DetallePedidoController extends Controller
@@ -20,7 +21,8 @@ class DetallePedidoController extends Controller
      */
     public function create()
     {
-        //
+        $productos = Producto::all();
+        return view('detalle_pedido.create', compact('productos'));
     }
 
     /**
