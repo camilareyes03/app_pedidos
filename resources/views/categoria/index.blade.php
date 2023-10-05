@@ -1,39 +1,31 @@
 @extends('adminlte::page')
 
-@section('title', 'Pedidos')
+@section('title', 'Categorias')
 
 @section('content_header')
-    <h1>Listado de Pedidos</h1>
+    <h1>Listado de Categorias</h1>
 @stop
 
 @section('content')
-    <a href="pedidos/create" class="btn btn-primary ">Registrar</a>
+    <a href="categorias/create" class="btn btn-primary ">Registrar</a>
     <br> <br>
-    <table id="pedidos" class="table table-striped table-bordered" style="width: 100%">
+    <table id="categorias" class="table table-striped table-bordered" style="width: 100%">
         <thead class="bg-primary text-white">
             <tr>
                 <th scope="col">ID</th>
-                <th scope="col">Fecha</th>
-                <th scope="col">Monto Total</th>
+                <th scope="col">Nombre</th>
                 <th scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($pedidos as $pedido)
+            @foreach ($categorias as $categoria)
                 <tr>
-                    <td>{{ $pedido->id }}</td>
-                    <td>{{ $pedido->fecha }}</td>
-                    <td>{{ $pedido->total }}</td>
+                    <td>{{ $categoria->id }}</td>
+                    <td>{{ $categoria->nombre }}</td>
                     <td>
-                        <form class="formulario-eliminar" action="{{ route('pedidos.destroy', $pedido->id) }}"
+                        <form class="formulario-eliminar" action="{{ route('categorias.destroy', $categoria->id) }}"
                             method="POST">
-
-                            <a href="{{ route('detallepedido.create', ['pedido_id' => $pedido->id]) }}"
-                                class="btn btn-success">Agregar Productos</a>
-                                <a href="{{ route('detallepedido.show', $pedido->id) }}" class="btn btn-info">Ver Detalles</a>
-
-
-                            <a href="{{ route('pedidos.edit', $pedido->id) }}" class="btn btn-info">Editar</a>
+                            <a href="{{ route('categorias.edit', $categoria->id) }}" class="btn btn-info">Editar</a>
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Eliminar</button>
@@ -51,21 +43,18 @@
 @stop
 
 @section('js')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
     <script>
-        $('#pedidos').DataTable();
+        $('#categorias').DataTable();
     </script>
-
     @if (session('eliminar') == 'ok')
         <script>
             Swal.fire(
                 'Eliminado!',
-                'El pedido ha sido eliminado exitosamente',
+                'Tu categoria ha sido eliminada exitosamente',
                 'success'
             )
         </script>
@@ -74,16 +63,17 @@
         <script>
             Swal.fire(
                 'Exito!',
-                'Tu pedido ha sido creado exitosamente',
+                'Tu categoria ha sido creada exitosamente',
                 'success'
             )
         </script>
     @endif
+
     @if (session('edit-success'))
         <script>
             Swal.fire(
                 'Exito!',
-                'El pedido ha sido editada exitosamente',
+                'Tu categoria ha sido editada exitosamente',
                 'success'
             )
         </script>
@@ -95,7 +85,7 @@
 
             Swal.fire({
                 title: 'Estas seguro?',
-                text: "Este pedido se eliminará definitivamente",
+                text: "Esta categoria se eliminara definitivamente",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -103,6 +93,7 @@
                 confirmButtonText: 'Si, eliminar!'
             }).then((result) => {
                 if (result.isConfirmed) {
+
                     this.submit();
                 }
             })

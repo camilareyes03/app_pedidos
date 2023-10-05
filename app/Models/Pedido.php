@@ -26,4 +26,14 @@ class Pedido extends Model
     {
         return $this->hasMany(DetallePedido::class, 'pedido_id');
     }
+    public function actualizarMontoTotal()
+    {
+        $montoTotal = $this->detallePedido->sum('monto');
+        $this->total = $montoTotal;
+        $this->save();
+
+        return $this->detallePedido(); // Return the updated detallesPedido relationship
+
+    }
+
 }

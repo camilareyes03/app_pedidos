@@ -29,3 +29,6 @@ Route::middleware([
 
 Route::resource('pedidos', 'App\Http\Controllers\PedidoController')->middleware('auth');
 Route::resource('detallepedido', 'App\Http\Controllers\DetallePedidoController')->middleware('auth');
+
+Route::resource('categorias', 'App\Http\Controllers\CategoriaController')->middleware('auth');
+Route::resource('productos', 'App\Http\Controllers\ProductoController')->middleware('auth');

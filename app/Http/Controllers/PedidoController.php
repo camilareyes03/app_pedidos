@@ -62,15 +62,20 @@ class PedidoController extends Controller
     public function edit($id)
     {
         $pedido = Pedido::find($id);
-        return view('pedido.edit')->with('pedido', $pedido);
+        return view('pedido.edit', compact('pedido'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Pedido $pedido)
+    public function update(Request $request, $id)
     {
-        //
+        $pedido = Pedido::find($id);
+        $pedido->fecha = $request->get('fecha');
+
+        $pedido->save();
+
+        return redirect('pedidos')->with('edit-success', 'El pedido se ha actualizado exitosamente.');
     }
 
     /**

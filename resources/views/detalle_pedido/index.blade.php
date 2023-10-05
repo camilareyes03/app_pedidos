@@ -10,7 +10,7 @@
     <br>
     <a href="{{ route('pedidos.index') }}" class="btn btn-primary">Volver</a> <!-- Botón Volver -->
     <br> <br>
-    <h2>Monto Total: {{ $montoTotal }}</h2>
+    {{-- <h2>Monto Total: {{ $montoTotal }}</h2> --}}
 
     <table id="detallepedido" class="table table-striped table-bordered" style="width: 100%">
         <thead class="bg-primary text-white">
@@ -18,8 +18,8 @@
                 <th>ID</th>
                 <th>ID Pedido</th>
                 <th>Producto</th>
-                <th>Cantidad</th>
                 <th>Precio</th>
+                <th>Cantidad</th>
                 <th>Subtotal</th>
                 <th>Acciones</th>
             </tr>
@@ -30,66 +30,19 @@
                     <td>{{ $detalle->id }}</td>
                     <td>{{ $detalle->pedido_id }}</td>
                     <td>{{ $detalle->producto->nombre }}</td>
+                    <td>{{ $detalle->producto->precio }}</td>
                     <td>{{ $detalle->cantidad }}</td>
-                    <td>{{ $detalle->precio }}</td>
                     <td>{{ $detalle->monto }}</td>
                     <td>
                         <form class="formulario-eliminar" action="{{ route('detallepedido.destroy', $detalle->id) }}"
                             method="POST">
-                            <button type="button" class="btn btn-info btn-editar" data-detalle-id="{{ $detalle->id }}"
-                                data-toggle="modal" data-target="#editarDetalleModal{{ $detalle->id }}">Editar</button>
-
+                            <a href="{{ route('detallepedido.edit', $detalle->id) }}" class="btn btn-info">Editar</a>
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Eliminar</button>
                         </form>
                     </td>
                 </tr>
-
-                <!-- Modal Editar Detalle -->
-                <div class="modal fade" id="editarDetalleModal{{ $detalle->id }}" tabindex="-1" role="dialog"
-                    aria-labelledby="editarDetalleModalLabel{{ $detalle->id }}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editarDetalleModalLabel{{ $detalle->id }}">Editar Detalle de
-                                    Pedido</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form id="editarDetalleForm{{ $detalle->id }}"
-                                action="{{ route('detallepedido.update', $detalle->id) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="idProducto">Producto:</label>
-                                        <select class="form-control" id="idProducto{{ $detalle->id }}" name="idProducto">
-                                            @foreach ($productos as $producto)
-                                                <option value="{{ $producto->id }}" {{ $detalle->idProducto == $producto->id ? 'selected' : '' }}>{{ $producto->nombre }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="cantidad">Cantidad:</label>
-                                        <input type="number" class="form-control" id="cantidad{{ $detalle->id }}"
-                                            name="cantidad" min="1" value="{{ $detalle->cantidad }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="precio">Precio:</label>
-                                        <input type="number" class="form-control" id="precio{{ $detalle->id }}"
-                                            name="precio" min="0" step="0.01" value="{{ $detalle->precio }}">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             @endforeach
         </tbody>
     </table>
@@ -146,17 +99,5 @@
                 }
             })
         })
-
-        $('.btn-editar').click(function() {
-            var detalleId = $(this).data('detalle-id');
-            var productoId = $('#producto' + detalleId).val();
-            var cantidad = $('#cantidad' + detalleId).val();
-            var precio = $('#precio' + detalleId).val();
-
-            $('#editarDetalleForm' + detalleId + ' #idProducto').val(
-            productoId); // Actualizar el campo "idProducto"
-            $('#editarDetalleForm' + detalleId + ' #cantidad').val(cantidad);
-            $('#editarDetalleForm' + detalleId + ' #precio').val(precio);
-        });
     </script>
 @stop
