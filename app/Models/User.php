@@ -24,7 +24,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
 
-     protected $table = 'users';
+    protected $table = 'users';
 
     protected $fillable = [
         'name',
@@ -69,14 +69,17 @@ class User extends Authenticatable
 
     use HasFactory;
 
-    public function pedido_cliente(){
-        return $this->hasMany(Pedido::class,'cliente_id');
+    public function pedido_cliente()
+    {
+        return $this->hasMany(Pedido::class, 'cliente_id');
     }
-    public function pedido_repartidor(){
-        return $this->hasMany(Pedido::class,'repartidor_id');
+    public function pedido_repartidor()
+    {
+        return $this->hasMany(Pedido::class, 'repartidor_id');
     }
 
-    public function ubicacion(){
-        return $this->hasMany(Ubicacion::class,'cliente_id');
+    public function ubicacion()
+    {
+        return $this->hasMany(Ubicacion::class, 'cliente_id');
     }
 }

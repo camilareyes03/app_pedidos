@@ -27,6 +27,8 @@ Route::middleware([
     })->name('dashboard');
 });
 
+Route::resource('personas', 'App\Http\Controllers\User')->middleware('auth');
+
 Route::resource('pedidos', 'App\Http\Controllers\PedidoController')->middleware('auth');
 Route::resource('detallepedido', 'App\Http\Controllers\DetallePedidoController')->middleware('auth');
 
