@@ -14,7 +14,7 @@ class User extends Controller
      */
     public function index()
     {
-        $personas = ModelsUser::all();
+        $personas = ModelsUser::where('tipo_usuario', '!=', 'admin')->get();
         return view('persona.index', compact('personas'));
     }
 
