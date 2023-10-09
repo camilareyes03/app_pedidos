@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pedido;
 use App\Models\Producto;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PedidoController extends Controller
@@ -22,31 +23,64 @@ class PedidoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        return view('pedido.create');
-    }
+
+     public function create()
+     {
+         // Obtener la lista de usuarios que son clientes
+         $clientes = User::where('tipo_usuario', 'cliente')->get();
+         //dd($clientes);
+         $repartidores = User::where('tipo_usuario', 'repartidor')->get();
+
+         return view('pedido.create', compact('clientes', 'repartidores'));
+     }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'fecha' => 'required',
-        ], [
-            'fecha.required' => 'El campo fecha es obligatorio.',
-        ]);
+        $this->validarDatos($request);
 
         $pedido = new Pedido();
         $pedido->fecha = $request->input('fecha');
 
-        // Actualizar el monto total del pedido
-        $pedido->total = $pedido->detallePedido->sum('monto');
+        // Asignar el cliente_id y repartidor_id según sea necesario
+        $pedido->cliente_id = $request->input('cliente_id');
+        $pedido->repartidor_id = $request->input('repartidor_id');
+
+        // Agregar el estado del pedido
+        $pedido->estado = $request->input('estado');
+
         $pedido->save();
 
         return redirect('pedidos')->with('success', 'El pedido se ha guardado exitosamente.');
     }
+
+
+    public function validarDatos(Request $request)
+    {
+        $reglas = [
+            'fecha' => 'required',
+            'cliente_id' => 'required|exists:users,id,tipo_usuario,cliente',
+            'repartidor_id' => 'required|exists:users,id,tipo_usuario,repartidor',
+            'estado' => 'required|in:entregado,cancelado,en espera', // Agrega esta línea para validar el estado
+        ];
+
+        $mensajes = [
+            'fecha.required' => 'El campo fecha es obligatorio.',
+            'cliente_id.required' => 'El campo cliente es obligatorio.',
+            'cliente_id.exists' => 'El cliente seleccionado no es válido.',
+            'repartidor_id.required' => 'El campo repartidor es obligatorio.',
+            'repartidor_id.exists' => 'El repartidor seleccionado no es válido.',
+            'estado.required' => 'El campo estado es obligatorio.', // Mensaje para el estado requerido
+            'estado.in' => 'El estado seleccionado no es válido.', // Mensaje para estados no válidos
+        ];
+
+        $request->validate($reglas, $mensajes);
+    }
+
+
 
     /**
      * Display the specified resource.
@@ -62,7 +96,10 @@ class PedidoController extends Controller
     public function edit($id)
     {
         $pedido = Pedido::find($id);
-        return view('pedido.edit', compact('pedido'));
+        $clientes = User::where('tipo_usuario', 'cliente')->get();
+        $repartidores = User::where('tipo_usuario', 'repartidor')->get();
+
+        return view('pedido.edit', compact('pedido', 'clientes', 'repartidores'));
     }
 
     /**
@@ -70,13 +107,22 @@ class PedidoController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validarDatos($request);
+
         $pedido = Pedido::find($id);
         $pedido->fecha = $request->get('fecha');
+        $pedido->cliente_id = $request->input('cliente_id');
+        $pedido->repartidor_id = $request->input('repartidor_id');
+
+        // Agregar el estado del pedido
+        $pedido->estado = $request->input('estado');
 
         $pedido->save();
 
         return redirect('pedidos')->with('edit-success', 'El pedido se ha actualizado exitosamente.');
     }
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -87,4 +133,8 @@ class PedidoController extends Controller
         $pedido->delete();
         return redirect('pedidos')->with('eliminar', 'ok');
     }
+
+
+
+
 }

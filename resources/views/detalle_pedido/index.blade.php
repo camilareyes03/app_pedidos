@@ -10,7 +10,8 @@
     <br>
     <a href="{{ route('pedidos.index') }}" class="btn btn-primary">Volver</a> <!-- Botón Volver -->
     <br> <br>
-    {{-- <h2>Monto Total: {{ $montoTotal }}</h2> --}}
+    <h2>Monto Total: {{ number_format($montoTotal, 2) }}</h2>
+
 
     <table id="detallepedido" class="table table-striped table-bordered" style="width: 100%">
         <thead class="bg-primary text-white">
@@ -61,6 +62,7 @@
     <script>
         $('#detallepedido').DataTable();
     </script>
+
     @if (session('eliminar') == 'ok')
         <script>
             Swal.fire(

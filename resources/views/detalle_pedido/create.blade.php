@@ -10,27 +10,30 @@
     <form action="/detallepedido" method="POST">
         @csrf
         <div class="mb-3">
-
             <input type="hidden" name="pedido_id" value="{{ $pedidoId }}">
             <label for="producto_id" class="form-label">Selecciona el Producto</label>
-
             <select name="producto_id" id="select-room" class="form-control" onchange="habilitar()">
-                <option value="nulo">Productos: </option>
                 @foreach ($productos as $producto)
-                    <option value="{{ $producto->id }}"> {{ $producto->nombre }}
-                    </option>
+                    <option value="{{ $producto->id }}"> {{ $producto->nombre }}</option>
                 @endforeach
             </select>
+            @error('producto_id')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
         </div>
         <div class="mb-3">
             <label for="cantidad" class="form-label">Cantidad</label>
             <input type="text" id="cantidad" name="cantidad" class="form-control" tabindex="2">
+            @error('cantidad')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
         </div>
 
         <a href="/pedidos" class="btn btn-secondary" tabindex="4">Cancelar</a>
         <button type="submit" class="btn btn-primary" tabindex="3">Guardar</button>
     </form>
 @stop
+
 
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">

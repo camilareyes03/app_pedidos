@@ -6,6 +6,7 @@ use App\Models\DetallePedido;
 use App\Models\Pedido;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class DetallePedidoController extends Controller
 {
@@ -33,39 +34,48 @@ class DetallePedidoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'producto_id' => 'required',
-            'cantidad' => 'required|numeric|min:1',
-            'pedido_id' => 'required'
-        ]);
+        $this->validarDetallePedido($request);
 
         // Obtener los datos del formulario
         $productoId = $request->input('producto_id');
         $cantidad = $request->input('cantidad');
         $pedidoId = $request->input('pedido_id');
 
-        // Obtener el precio del producto seleccionado
-        $producto = Producto::find($productoId);
-        $precioProducto = $producto->precio;
+        // Validar si el producto ya existe en el detalle del pedido
+        $detallePedidoExistente = DetallePedido::where('pedido_id', $pedidoId)
+            ->where('producto_id', $productoId)
+            ->first();
 
-        // Calcular el subtotal
-        $subTotal = $cantidad * $precioProducto;
+        if ($detallePedidoExistente) {
+            // Si el producto ya existe, simplemente suma la cantidad
+            $detallePedidoExistente->cantidad += $cantidad;
+            $detallePedidoExistente->monto = $detallePedidoExistente->cantidad * $detallePedidoExistente->producto->precio;
+            $detallePedidoExistente->save();
+        } else {
+            // Si el producto no existe, crea un nuevo registro
+            // Obtener el precio del producto seleccionado
+            $producto = Producto::find($productoId);
+            $precioProducto = $producto->precio;
 
-        // Guardar el detalle del pedido en la base de datos
-        $detallePedido = new DetallePedido();
-        $detallePedido->pedido_id = $pedidoId;
-        $detallePedido->producto_id = $productoId;
-        $detallePedido->cantidad = $cantidad;
-        $detallePedido->monto = $subTotal;
-        $detallePedido->save();
+            // Calcular el subtotal
+            $subTotal = $cantidad * $precioProducto;
+
+            // Guardar el detalle del pedido en la base de datos
+            $detallePedido = new DetallePedido();
+            $detallePedido->pedido_id = $pedidoId;
+            $detallePedido->producto_id = $productoId;
+            $detallePedido->cantidad = $cantidad;
+            $detallePedido->monto = $subTotal;
+            $detallePedido->save();
+        }
 
         // Actualizar el campo montoTotal del pedido correspondiente
         $pedido = Pedido::find($pedidoId);
         $pedido->actualizarMontoTotal();
 
-        return redirect()->action([PedidoController::class, 'show'], ['pedido' => $pedido])->with('success', 'Detalle de pedido agregado exitosamente');
-
+        return redirect()->route('pedidos.index')->with('success-detalle', 'El producto se ha guardado exitosamente.');
     }
+
 
     /**
      * Display the specified resource.
@@ -76,8 +86,10 @@ class DetallePedidoController extends Controller
         $detalles = $pedido->detallePedido;
         $productos = Producto::all();
 
+        // Calcular el monto total sumando todos los subtotales
+        $montoTotal = $detalles->sum('monto');
 
-        return view('detalle_pedido.index', compact('detalles', 'productos'));
+        return view('detalle_pedido.index', compact('detalles', 'productos', 'montoTotal'));
     }
 
     /**
@@ -121,6 +133,29 @@ class DetallePedidoController extends Controller
 }
 
 
+protected function validarDetallePedido(Request $request)
+{
+    return $request->validate([
+        'producto_id' => 'required',
+        'cantidad' => [
+            'required',
+            'numeric',
+            'min:1',
+            Rule::unique('detalle_pedidos')->where(function ($query) use ($request) {
+                return $query->where('producto_id', $request->input('producto_id'))
+                    ->where('pedido_id', $request->input('pedido_id'));
+            }),
+        ],
+        'pedido_id' => 'required',
+    ], [
+        'producto_id.required' => 'El campo producto es obligatorio.',
+        'cantidad.required' => 'El campo cantidad es obligatorio.',
+        'cantidad.numeric' => 'El campo cantidad debe ser numérico.',
+        'cantidad.min' => 'El campo cantidad debe ser mayor o igual a 1.',
+        'cantidad.unique' => 'Este producto ya existe en el detalle del pedido. Actualiza la cantidad si es necesario.',
+        'pedido_id.required' => 'El campo pedido es obligatorio.',
+    ]);
+}
 
     /**
      * Remove the specified resource from storage.

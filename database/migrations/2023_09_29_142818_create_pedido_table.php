@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('fecha');
             $table->decimal('total', 10,2);
+            $table->string('estado');
 
             $table->unsignedBigInteger("cliente_id")->nullable();
             $table->unsignedBigInteger("repartidor_id")->nullable();

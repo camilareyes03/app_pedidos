@@ -13,7 +13,10 @@
         <thead class="bg-primary text-white">
             <tr>
                 <th scope="col">ID</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Repartidor</th>
                 <th scope="col">Fecha</th>
+                <th scope="col">Estado</th>
                 <th scope="col">Monto Total</th>
                 <th scope="col">Acciones</th>
             </tr>
@@ -22,7 +25,10 @@
             @foreach ($pedidos as $pedido)
                 <tr>
                     <td>{{ $pedido->id }}</td>
+                    {{-- <td>{{ $pedido->user_cliente->name }}</td>
+                    <td>{{ $pedido->user_repartidor->name }}</td> --}}
                     <td>{{ $pedido->fecha }}</td>
+                    <td>{{ $pedido->estado }}</td>
                     <td>{{ $pedido->total }}</td>
                     <td>
                         <form class="formulario-eliminar" action="{{ route('pedidos.destroy', $pedido->id) }}"
@@ -75,6 +81,15 @@
             Swal.fire(
                 'Exito!',
                 'Tu pedido ha sido creado exitosamente',
+                'success'
+            )
+        </script>
+    @endif
+    @if (session('success-detalle'))
+        <script>
+            Swal.fire(
+                'Exito!',
+                'El producto ha sido agregado correctamente al pedido',
                 'success'
             )
         </script>

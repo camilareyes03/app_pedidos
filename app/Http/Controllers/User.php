@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User as ModelsUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 
 class User extends Controller
 {
@@ -36,19 +38,25 @@ class User extends Controller
         $persona->email = $request->input('email');
         $persona->ci = $request->input('ci');
         $persona->telefono = $request->input('telefono');
+        $persona->tipo_usuario = $request->input('tipo_usuario');
+
+        // Generar una contraseña aleatoria si no se proporciona una
+        $password = $request->input('password', Str::random(10));
+        $persona->password = bcrypt($password);
+
         if ($request->input('tipo_usuario') === 'cliente') {
-            $persona->tipo_usuario = $request->input('tipo_usuario');
             $persona->razon_social = $request->input('razon_social');
             $persona->codigo_empleado = null;
         } else {
-            $persona->tipo_usuario = $request->input('tipo_usuario');
             $persona->razon_social = null;
             $persona->codigo_empleado = $request->input('codigo_empleado');
         }
+
         $persona->save();
 
         return redirect('personas')->with('success', 'La persona se ha guardado exitosamente.');
     }
+
 
     /**
      * Display the specified resource.
