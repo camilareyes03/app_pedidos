@@ -141,7 +141,7 @@ protected function validarDetallePedido(Request $request)
             'required',
             'numeric',
             'min:1',
-            Rule::unique('detalle_pedidos')->where(function ($query) use ($request) {
+            Rule::unique('detalle_pedido')->where(function ($query) use ($request) {
                 return $query->where('producto_id', $request->input('producto_id'))
                     ->where('pedido_id', $request->input('pedido_id'));
             }),

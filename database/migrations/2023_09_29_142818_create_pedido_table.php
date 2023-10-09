@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pedido', function (Blueprint $table) {
             $table->id();
             $table->date('fecha');
-            $table->decimal('total', 10,2);
+            $table->decimal('total', 10,2)->nullable();
             $table->string('estado');
 
             $table->unsignedBigInteger("cliente_id")->nullable();

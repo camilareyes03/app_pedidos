@@ -19,7 +19,7 @@
         <div class="mb-3">
             <label for="estado" class="form-label">Estado del Pedido</label>
             <select id="estado" name="estado" class="form-control" tabindex="2">
-                <option value="esperando">En Espera</option>
+                <option value="espera">En Espera</option>
                 <option value="entregado">Entregado</option>
                 <option value="cancelado">Cancelado</option>
             </select>
@@ -51,6 +51,7 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
+
 
 
         <a href="/pedidos" class="btn btn-secondary" tabindex="6">Cancelar</a>

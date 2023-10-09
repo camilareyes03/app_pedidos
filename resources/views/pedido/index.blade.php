@@ -25,26 +25,40 @@
             @foreach ($pedidos as $pedido)
                 <tr>
                     <td>{{ $pedido->id }}</td>
-                    {{-- <td>{{ $pedido->user_cliente->name }}</td>
-                    <td>{{ $pedido->user_repartidor->name }}</td> --}}
+                    <td>{{ $pedido->user_cliente->name }}</td>
+                    <td>{{ $pedido->user_repartidor->name }}</td>
                     <td>{{ $pedido->fecha }}</td>
                     <td>{{ $pedido->estado }}</td>
                     <td>{{ $pedido->total }}</td>
                     <td>
                         <form class="formulario-eliminar" action="{{ route('pedidos.destroy', $pedido->id) }}"
                             method="POST">
+                            <a href="{{ route('detallepedido.show', $pedido->id) }}" class="btn btn-info">
+                                <i class="fas fa-eye"></i> Ver Detalle
+                            </a>
 
-                            <a href="{{ route('detallepedido.create', ['pedido_id' => $pedido->id]) }}"
-                                class="btn btn-success">Agregar Productos</a>
-                                <a href="{{ route('detallepedido.show', $pedido->id) }}" class="btn btn-info">Ver Detalles</a>
+                            @if ($pedido->estado !== 'entregado')
+                                <a href="{{ route('detallepedido.create', ['pedido_id' => $pedido->id]) }}"
+                                    class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Agregar Productos
+                                </a>
 
-
-                            <a href="{{ route('pedidos.edit', $pedido->id) }}" class="btn btn-info">Editar</a>
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                <a href="{{ route('pedidos.edit', $pedido->id) }}" class="btn btn-warning">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            @else
+                                <!-- Si el pedido está entregado, muestra un mensaje o icono de "No disponible" -->
+                                <span class="text-muted"><i class="fas fa-ban"></i> No disponible</span>
+                            @endif
                         </form>
                     </td>
+
+
                 </tr>
             @endforeach
         </tbody>
@@ -54,6 +68,8 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 @stop
 
 @section('js')

@@ -44,13 +44,12 @@ class PedidoController extends Controller
 
         $pedido = new Pedido();
         $pedido->fecha = $request->input('fecha');
-
-        // Asignar el cliente_id y repartidor_id según sea necesario
         $pedido->cliente_id = $request->input('cliente_id');
         $pedido->repartidor_id = $request->input('repartidor_id');
 
         // Agregar el estado del pedido
         $pedido->estado = $request->input('estado');
+        $pedido->total = 0.0;
 
         $pedido->save();
 
@@ -64,7 +63,7 @@ class PedidoController extends Controller
             'fecha' => 'required',
             'cliente_id' => 'required|exists:users,id,tipo_usuario,cliente',
             'repartidor_id' => 'required|exists:users,id,tipo_usuario,repartidor',
-            'estado' => 'required|in:entregado,cancelado,en espera', // Agrega esta línea para validar el estado
+            'estado' => 'required|in:entregado,cancelado,espera', // Agrega esta línea para validar el estado
         ];
 
         $mensajes = [

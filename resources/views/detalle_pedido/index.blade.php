@@ -37,12 +37,17 @@
                     <td>
                         <form class="formulario-eliminar" action="{{ route('detallepedido.destroy', $detalle->id) }}"
                             method="POST">
-                            <a href="{{ route('detallepedido.edit', $detalle->id) }}" class="btn btn-info">Editar</a>
+                            <a href="{{ route('detallepedido.edit', $detalle->id) }}" class="btn btn-info">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
                         </form>
                     </td>
+
                 </tr>
             @endforeach
         </tbody>
@@ -52,6 +57,8 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 @stop
 
 @section('js')
