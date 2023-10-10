@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Pedidos - App',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,8 +63,8 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo' => 'Pedidos - App',
+    'logo_img' => "https://i.pinimg.com/564x/5c/61/84/5c61840474f5e4f69ca6a03507c2a569.jpg",
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
@@ -86,7 +86,7 @@ return [
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => "https://i.pinimg.com/564x/5c/61/84/5c61840474f5e4f69ca6a03507c2a569.jpg",
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,
@@ -109,11 +109,11 @@ return [
     'preloader' => [
         'enabled' => true,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => "https://i.pinimg.com/564x/5c/61/84/5c61840474f5e4f69ca6a03507c2a569.jpg",
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
+            'width' => 80,
+            'height' => 80,
         ],
     ],
 
@@ -324,12 +324,12 @@ return [
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-user',
         ],
-        [
+        /* [
             'text' => 'change_password',
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
+        ], */
+        /* [
             'text'    => 'multilevel',
             'icon'    => 'fas fa-fw fa-share',
             'submenu' => [
@@ -366,8 +366,8 @@ return [
                     'url'  => '#',
                 ],
             ],
-        ],
-        ['header' => 'labels'],
+        ], */
+        /* ['header' => 'labels'],
         [
             'text'       => 'important',
             'icon_color' => 'red',
@@ -382,7 +382,7 @@ return [
             'text'       => 'information',
             'icon_color' => 'cyan',
             'url'        => '#',
-        ],
+        ], */
     ],
 
     /*

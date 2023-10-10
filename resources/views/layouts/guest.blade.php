@@ -14,10 +14,16 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+        <style>
+            body {
+                background-color: red; /* Cambia el color de fondo a rojo */
+            }
+        </style>
+
         <!-- Styles -->
         @livewireStyles
     </head>
-    <body>
+    <body >
         <div class="font-sans text-gray-900 antialiased">
             {{ $slot }}
         </div>
