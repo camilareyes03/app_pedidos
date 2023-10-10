@@ -110,5 +110,5 @@
             });
         }
     </script>
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=API&callback=initMap" async defer></script> -->
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLxbZNLoifOFOmedMfeZjKh2532vpRY0s&callback=initMap" async defer></script>
 @stop
