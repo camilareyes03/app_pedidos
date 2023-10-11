@@ -32,9 +32,8 @@ class User extends Authenticatable
         'password',
         'ci',
         'telefono',
-        'foto_cliente',
+        'foto',
         'razon_social',
-        'codigo_empleado'
     ];
 
     /**
@@ -72,10 +71,6 @@ class User extends Authenticatable
     public function pedido_cliente()
     {
         return $this->hasMany(Pedido::class, 'cliente_id');
-    }
-    public function pedido_repartidor()
-    {
-        return $this->hasMany(Pedido::class, 'repartidor_id');
     }
 
     public function ubicacion()

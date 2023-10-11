@@ -14,6 +14,7 @@
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Nombre</th>
+                <th scope="col">Descripcion</th>
                 <th scope="col">Acciones</th>
             </tr>
         </thead>
@@ -22,6 +23,7 @@
                 <tr>
                     <td>{{ $categoria->id }}</td>
                     <td>{{ $categoria->nombre }}</td>
+                    <td>{{ $categoria->descripcion }}</td>
                     <td>
                         <form class="formulario-eliminar" action="{{ route('categorias.destroy', $categoria->id) }}"
                             method="POST">

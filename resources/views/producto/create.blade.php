@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-    <form action="/productos" method="POST">
+    <form action="/productos" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre</label>
@@ -24,16 +24,35 @@
             @enderror
         </div>
         <div class="mb-3">
+            <label for="stock" class="form-label">Stock</label>
+            <input type="number" id="stock" name="stock" class="form-control" tabindex="3">
+            @error('stock')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
             <label for="categoria_id" class="form-label">Selecciona la Categoria</label>
 
-        <select name="categoria_id" id="select-room" class="form-control" onchange="habilitar()">
-            <option value="nulo">Categorias: </option>
-            @foreach ($categorias as $categoria)
-                <option value="{{ $categoria->id }}"> {{ $categoria->nombre }}
-                </option>
-            @endforeach
-        </select>
-    </div>
+            <select name="categoria_id" id="select-room" class="form-control" onchange="habilitar()">
+                <option value="nulo">Categorias: </option>
+                @foreach ($categorias as $categoria)
+                    <option value="{{ $categoria->id }}"> {{ $categoria->nombre }}
+                    </option>
+                @endforeach
+            </select>
+
+
+            <div class="mb-3">
+                <br>
+                <label for="foto" class="form-label">{{ __('Selecciona una Imagen') }}</label>
+                <input type="file" id="foto" class="form-control" name="foto" accept="image/*">
+                <br>
+                @error('foto')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+        </div>
 
         <a href="/productos" class="btn btn-secondary" tabindex="4">Cancelar</a>
         <button type="submit" class="btn btn-primary" tabindex="3">Guardar</button>
@@ -43,4 +62,3 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 @stop
-

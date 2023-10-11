@@ -28,7 +28,9 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::resource('personas', 'App\Http\Controllers\User')->middleware('auth');
+Route::resource('personas', 'App\Http\Controllers\UserController')->middleware('auth');
+Route::get('/clientes', 'App\Http\Controllers\UserController@clientes')->name('clientes.index');
+Route::get('/administradores', 'App\Http\Controllers\UserController@administradores')->name('administradores.index');
 
 Route::prefix('ubicaciones')->middleware('auth')->group(function () {
     Route::get('{cliente_id}', [UbicacionController::class, 'index'])->name('ubicaciones.index');
@@ -40,7 +42,11 @@ Route::prefix('ubicaciones')->middleware('auth')->group(function () {
 });
 
 Route::resource('pedidos', 'App\Http\Controllers\PedidoController')->middleware('auth');
+Route::get('/proforma', 'App\Http\Controllers\PedidoController@proforma')->name('pedidos.proforma');
+Route::get('/oficial', 'App\Http\Controllers\PedidoController@oficial')->name('pedidos.oficial');
+
 Route::resource('detallepedido', 'App\Http\Controllers\DetallePedidoController')->middleware('auth');
 
 Route::resource('categorias', 'App\Http\Controllers\CategoriaController')->middleware('auth');
 Route::resource('productos', 'App\Http\Controllers\ProductoController')->middleware('auth');
+

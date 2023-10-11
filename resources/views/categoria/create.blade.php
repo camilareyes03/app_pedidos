@@ -16,6 +16,13 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripcion</label>
+            <input type="text" id="descripcion" name="descripcion" class="form-control" tabindex="2">
+            @error('descripcion')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
 
         <a href="/categorias" class="btn btn-secondary" tabindex="4">Cancelar</a>
         <button type="submit" class="btn btn-primary" tabindex="3">Guardar</button>

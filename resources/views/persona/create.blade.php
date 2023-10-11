@@ -7,21 +7,12 @@
 @stop
 
 @section('content')
-    <form action="/personas" method="POST">
+    <form action="/personas" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="name" class="form-label">Nombre Completo</label>
             <input type="text" id="name" name="name" class="form-control" value="{{ old('name') }}" tabindex="1">
             @error('name')
-                <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}"
-                tabindex="1">
-            @error('email')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
@@ -50,35 +41,45 @@
                 <option value="nulo" {{ old('tipo_usuario') === 'nulo' ? 'selected' : '' }}>Selecciona el Tipo de Persona
                 </option>
                 <option value="cliente" {{ old('tipo_usuario') === 'cliente' ? 'selected' : '' }}>Cliente</option>
-                <option value="repartidor" {{ old('tipo_usuario') === 'repartidor' ? 'selected' : '' }}>Repartidor</option>
+                <option value="administrador" {{ old('tipo_usuario') === 'administrador' ? 'selected' : '' }}>Administrador
+                </option>
             </select>
             @error('tipo_usuario')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
-        <div class="mb-3" id="razon_social_container" style="display:none;">
-            <label for="razon_social" class="form-label">Razon Social</label>
-            <input type="text" id="razon_social" name="razon_social" class="form-control"
-                value="{{ old('razon_social') }}" tabindex="1">
-            @error('razon_social')
+
+        <div class="mb-3" id="foto_container" style="display:none;">
+            <br>
+            <label for="foto" class="form-label">{{ __('Selecciona una Imagen') }}</label>
+            <input type="file" id="foto" class="form-control" name="foto" accept="image/*">
+            <br>
+            @error('foto')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
+        </div>
+
+        <div class="mb-3" id="email_container" style="display:none;">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}"
+                tabindex="1">
+            @error('email')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
 
-        <div class="mb-3" id="codigo_empleado_container" style="display:none;">
-            <label for="codigo_empleado" class="form-label">Codigo de Empleado</label>
-            <input type="text" id="codigo_empleado" name="codigo_empleado" class="form-control"
-                value="{{ old('codigo_empleado') }}" tabindex="1">
-            @error('codigo_empleado')
+        <div class="mb-3" id="password_container" style="display:none;">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" name="password" class="form-control" value="{{ old('password') }}"
+                tabindex="1">
+            @error('password')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
-
 
         <a href="/personas" class="btn btn-secondary" tabindex="4">Cancelar</a>
         <button type="submit" class="btn btn-success" tabindex="3">Guardar</button>
     </form>
-
 @stop
 
 @section('js')
@@ -93,19 +94,26 @@
             $('#tipo_usuario').change(function() {
                 var selectedOption = $(this).val();
 
+                // Establece las variables para los contenedores
+                var fotoContainer = $('#foto_container');
+                var emailContainer = $('#email_container');
+                var passwordContainer = $('#password_container');
+
+                // Muestra u oculta los contenedores según la opción seleccionada
                 if (selectedOption === 'cliente') {
-                    $('#razon_social_container').show();
-                    $('#codigo_empleado_container').hide();
-                } else if (selectedOption === 'repartidor') {
-                    $('#razon_social_container').hide();
-                    $('#codigo_empleado_container').show();
-                } else {
-                    $('#razon_social_container').hide();
-                    $('#codigo_empleado_container').hide();
+                    fotoContainer.show();
+                    emailContainer.hide();
+                    passwordContainer.hide();
+                } else if (selectedOption === 'administrador') {
+                    fotoContainer.hide();
+                    emailContainer.show();
+                    passwordContainer.show();
                 }
             });
         });
-    </script>
+        </script>
+
+
 @stop
 
 @section('css')

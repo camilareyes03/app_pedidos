@@ -22,19 +22,15 @@ class CategoriaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required',
-        ],
-        [
-            'nombre.required' => 'El campo nombre es obligatorio.',
-        ]);
+        $this->validarDatos($request);
+
         $categoria = new Categoria();
         $categoria->nombre = $request->input('nombre');
+        $categoria->descripcion = $request->input('descripcion');
 
         $categoria->save();
 
         return redirect('categorias')->with('success', 'La categoría se ha guardado exitosamente.');
-
     }
 
 
@@ -47,7 +43,10 @@ class CategoriaController extends Controller
     public function update(Request $request, string $id)
     {
         $categoria = Categoria::find($id);
-        $categoria->nombre = $request->get('nombre');
+        $this->validarDatos($request);
+
+        $categoria->nombre = $request->input('nombre');
+        $categoria->descripcion = $request->input('descripcion');
 
         $categoria->save();
 
@@ -59,5 +58,17 @@ class CategoriaController extends Controller
         $categoria = Categoria::find($id);
         $categoria->delete();
         return redirect('categorias')->with('eliminar', 'ok');
+    }
+
+    private function validarDatos(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required',
+            'descripcion' => 'required',
+        ],
+        [
+            'nombre.required' => 'El campo nombre es obligatorio.',
+            'descripcion.required' => 'El campo descripcion es obligatorio.',
+        ]);
     }
 }

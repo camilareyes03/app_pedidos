@@ -7,18 +7,28 @@
 @stop
 
 @section('content')
-<form action="/categorias/{{ $categoria->id }}" method="POST">
-    @csrf
-    @method('PUT')
+    <form action="/categorias/{{ $categoria->id }}" method="POST">
+        @csrf
+        @method('PUT')
 
-    <div class="mb-3">
-        <label for="nombre" class="form-label" >Nombre</label>
-        <input type="text" id="nombre" name="nombre" class="form-control" value="{{ $categoria->nombre }}">
-    </div>
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" id="nombre" name="nombre" class="form-control" value="{{ $categoria->nombre }}">
+            @error('nombre')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripcion</label>
+            <input type="text" id="descripcion" name="descripcion" class="form-control" value="{{ $categoria->descripcion }}">
+            @error('descripcion')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
 
-    <a href="/categorias" class="btn btn-secondary" tabindex="4">Cancelar</a>
-    <button type="submit" class="btn btn-primary" tabindex="3">Guardar</button>
-</form>
+        <a href="/categorias" class="btn btn-secondary" tabindex="4">Cancelar</a>
+        <button type="submit" class="btn btn-primary" tabindex="3">Guardar</button>
+    </form>
 @stop
 
 @section('css')
@@ -26,6 +36,5 @@
 @stop
 
 @section('js')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @stop
-

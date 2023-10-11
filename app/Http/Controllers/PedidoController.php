@@ -20,6 +20,22 @@ class PedidoController extends Controller
         return view('pedido.index', compact('pedidos', 'productos'));
     }
 
+    public function proforma()
+    {
+        $pedidos = Pedido::where('tipo_pedido', 'proforma')->get();
+        $productos = Producto::all();
+
+        return view('pedido.index', compact('pedidos', 'productos'));
+    }
+
+    public function oficial()
+    {
+        $pedidos = Pedido::where('tipo_pedido', 'oficial')->get();
+        $productos = Producto::all();
+
+        return view('pedido.index', compact('pedidos', 'productos'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -45,10 +61,14 @@ class PedidoController extends Controller
         $pedido = new Pedido();
         $pedido->fecha = $request->input('fecha');
         $pedido->cliente_id = $request->input('cliente_id');
-        $pedido->repartidor_id = $request->input('repartidor_id');
 
-        // Agregar el estado del pedido
-        $pedido->estado = $request->input('estado');
+        if ($request->input('tipo_pedido') === 'oficial') {
+            $pedido->tipo_pago = $request->input('tipo_pago');
+        } else {
+            $pedido->tipo_pago = null;
+        }
+
+        $pedido->tipo_pedido = $request->input('tipo_pedido');
         $pedido->total = 0.0;
 
         $pedido->save();
@@ -59,25 +79,24 @@ class PedidoController extends Controller
 
     public function validarDatos(Request $request)
     {
-        $reglas = [
-            'fecha' => 'required',
-            'cliente_id' => 'required|exists:users,id,tipo_usuario,cliente',
-            'repartidor_id' => 'required|exists:users,id,tipo_usuario,repartidor',
-            'estado' => 'required|in:entregado,cancelado,espera', // Agrega esta línea para validar el estado
+        $rules = [
+            'fecha' => 'required|date',
+            'cliente_id' => 'required|exists:users,id',
+            'tipo_pedido' => 'required|in:proforma,oficial',
         ];
 
-        $mensajes = [
-            'fecha.required' => 'El campo fecha es obligatorio.',
-            'cliente_id.required' => 'El campo cliente es obligatorio.',
-            'cliente_id.exists' => 'El cliente seleccionado no es válido.',
-            'repartidor_id.required' => 'El campo repartidor es obligatorio.',
-            'repartidor_id.exists' => 'El repartidor seleccionado no es válido.',
-            'estado.required' => 'El campo estado es obligatorio.', // Mensaje para el estado requerido
-            'estado.in' => 'El estado seleccionado no es válido.', // Mensaje para estados no válidos
+        $messages = [
+            'fecha.required' => 'El campo Fecha es obligatorio.',
+            'fecha.date' => 'El campo Fecha debe ser una fecha válida.',
+            'cliente_id.required' => 'El campo Cliente es obligatorio.',
+            'cliente_id.exists' => 'El Cliente seleccionado no es válido.',
+            'tipo_pedido.required' => 'El campo Tipo de Pedido es obligatorio.',
+            'tipo_pedido.in' => 'El Tipo de Pedido debe ser "proforma" o "oficial.', // Nuevo mensaje para tipo_pedido
         ];
 
-        $request->validate($reglas, $mensajes);
+        $request->validate($rules, $messages);
     }
+
 
 
 

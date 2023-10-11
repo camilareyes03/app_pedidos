@@ -15,6 +15,8 @@
                 <th scope="col">ID</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Precio</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Foto</th>
                 <th scope="col">Categoria</th>
                 <th scope="col">Acciones</th>
             </tr>
@@ -25,6 +27,15 @@
                     <td>{{ $producto->id }}</td>
                     <td>{{ $producto->nombre }}</td>
                     <td>{{ $producto->precio }}</td>
+                    <td>{{ $producto->stock }}</td>
+                    <td>
+                        @if ($producto->foto)
+                            <img src="{{ asset($producto->foto) }}" alt="Foto del producto" width="70"
+                                height="70">
+                        @else
+                            <p>No se ha cargado ninguna foto del producto</p>
+                        @endif
+                    </td>
                     <td>{{ $producto->categoria->nombre }}</td>
                     <td>
                         <form class="formulario-eliminar" action="{{ route('productos.destroy', $producto->id) }}"

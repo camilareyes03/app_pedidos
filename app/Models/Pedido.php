@@ -10,16 +10,13 @@ class Pedido extends Model
     protected $table = 'pedido';
 
     protected $fillable = [
-        'fecha', 'total', 'estado', 'cliente_id', 'repartidor_id'
+        'fecha', 'total', 'estado', 'tipo_pedido', 'tipo_pago', 'cliente_id'
     ];
 
     use HasFactory;
 
     public function user_cliente(){
         return $this->belongsTo(User::class,'cliente_id');
-    }
-    public function user_repartidor(){
-        return $this->belongsTo(User::class,'repartidor_id');
     }
 
     public function detallePedido()

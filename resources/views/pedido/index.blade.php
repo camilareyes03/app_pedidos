@@ -3,7 +3,13 @@
 @section('title', 'Pedidos')
 
 @section('content_header')
-    <h1>Listado de Pedidos</h1>
+    @if (Request::is('proforma*'))
+        <h1>Listado de Proformas</h1>
+    @elseif (Request::is('oficial*'))
+        <h1>Listado de Pedidos Oficiales</h1>
+    @else
+        <h1>Listado de Pedidos</h1>
+    @endif
 @stop
 
 @section('content')
@@ -14,9 +20,11 @@
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Cliente</th>
-                <th scope="col">Repartidor</th>
                 <th scope="col">Fecha</th>
-                <th scope="col">Estado</th>
+                <th scope="col">Tipo</th>
+                @if (request()->is('oficial*'))
+                    <th scope="col">Método de Pago</th>
+                @endif
                 <th scope="col">Monto Total</th>
                 <th scope="col">Acciones</th>
             </tr>
@@ -26,9 +34,11 @@
                 <tr>
                     <td>{{ $pedido->id }}</td>
                     <td>{{ $pedido->user_cliente->name }}</td>
-                    <td>{{ $pedido->user_repartidor->name }}</td>
                     <td>{{ $pedido->fecha }}</td>
-                    <td>{{ $pedido->estado }}</td>
+                    <td>{{ $pedido->tipo_pedido }}</td>
+                    @if (request()->is('oficial*'))
+                        <td>{{ $pedido->tipo_pago }}</td>
+                    @endif
                     <td>{{ $pedido->total }}</td>
                     <td>
                         <form class="formulario-eliminar" action="{{ route('pedidos.destroy', $pedido->id) }}"
@@ -38,10 +48,11 @@
                             </a>
 
                             @if ($pedido->estado !== 'entregado')
-                                <a href="{{ route('detallepedido.create', ['pedido_id' => $pedido->id]) }}"
-                                    class="btn btn-success">
-                                    <i class="fas fa-plus"></i> Agregar Productos
-                                </a>
+                                <button type="button" class="btn btn-secondary btn-detalles"
+                                    data-pedido-id="{{ $pedido->id }}" data-toggle="modal"
+                                    data-target="#agregarProductoModal">
+                                    Agregar Productos
+                                </button>
 
                                 <a href="{{ route('pedidos.edit', $pedido->id) }}" class="btn btn-warning">
                                     <i class="fas fa-edit"></i> Editar
@@ -52,17 +63,74 @@
                                     <i class="fas fa-trash"></i> Eliminar
                                 </button>
                             @else
-                                <!-- Si el pedido está entregado, muestra un mensaje o icono de "No disponible" -->
                                 <span class="text-muted"><i class="fas fa-ban"></i> No disponible</span>
                             @endif
                         </form>
                     </td>
-
-
                 </tr>
             @endforeach
         </tbody>
     </table>
+
+    <!-- Modal Agregar Producto -->
+    <div class="modal fade" id="agregarProductoModal" tabindex="-1" role="dialog"
+        aria-labelledby="agregarProductoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="agregarProductoModalLabel">Agregar Producto al Pedido</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="agregarProductoForm" action="{{ route('detallepedido.store') }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="producto_id">Producto:</label>
+                            <select class="form-control" id="producto_id" name="producto_id">
+                                <option value="nulo">Seleccione un Producto</option>
+                                @foreach ($productos as $producto)
+                                    @if ($producto->stock == 0)
+                                        <option value="{{ $producto->id }}" data-precio="{{ $producto->precio }}"
+                                            data-foto="{{ asset($producto->foto) }}" disabled>
+                                            {{ $producto->nombre }} - No hay stock
+                                        </option>
+                                    @else
+                                        <option value="{{ $producto->id }}" data-precio="{{ $producto->precio }}"
+                                            data-foto="{{ asset($producto->foto) }}">
+                                            {{ $producto->nombre }} - Stock: {{ $producto->stock }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cantidad">Cantidad:</label>
+                            <input type="number" class="form-control" id="cantidad" name="cantidad" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="precio">Precio:</label>
+                            <input type="text" class="form-control" id="precio" name="precio" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="foto">Foto:</label>
+                            <img id="foto" src="" alt="Foto del producto" width="100" height="100">
+                        </div>
+
+                        <input type="hidden" id="pedido_id" name="pedido_id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 @stop
 
 @section('css')
@@ -139,4 +207,66 @@
             })
         })
     </script>
+    <script>
+        $(document).ready(function() {
+            // Al cargar la página, ocultamos el campo de precio y la imagen del producto
+            $('#precio').val('');
+            $('#foto').attr('src', ''); // Establece el atributo src a una cadena vacía
+
+            $('#producto_id').change(function() {
+                // Cuando cambia la selección de producto
+                var selectedOption = $(this).find(':selected');
+                var precio = selectedOption.data('precio');
+                var foto = selectedOption.data('foto');
+
+                // Actualizamos el campo de precio y la imagen del producto
+                $('#precio').val(precio);
+                $('#foto').attr('src', foto); // Actualiza el atributo src
+            });
+        });
+    </script>
+    <script>
+        $('#pedidos').DataTable();
+
+        // Mostrar el modal de agregar producto al pedido
+        $('.btn-detalles').click(function() {
+            var pedidoId = $(this).data('pedido-id');
+            $('#pedido_id').val(pedidoId);
+        });
+
+        $('#agregarProductoForm').submit(function(event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
+
+            // Petición AJAX para agregar el producto al pedido
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    $('#agregarProductoModal').modal('hide');
+                    // Mostrar notificación de éxito
+                    Swal.fire(
+                        'Producto agregado',
+                        'El producto se ha agregado al pedido exitosamente.',
+                        'success'
+                    );
+                    // Petición AJAX para actualizar la tabla de detalles del pedido
+                    $.ajax({
+                        url: '/detallepedido/show/' + response.pedido_id,
+                        type: 'GET',
+                        success: function(response) {
+                            $('#detalles-pedido-table').DataTable().clear().rows.add(
+                                response).draw();
+                        },
+                        error: function(xhr) {
+                            // Manejar errores
+                        }
+                    });
+                },
+            });
+        });
+    </script>
+
+
 @stop

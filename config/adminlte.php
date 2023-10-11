@@ -317,8 +317,28 @@ return [
             'icon'        => 'far fa-fw fa-file',
         ],
         [
+            'text'        => 'Proformas',
+            'url'         => '/proforma',
+            'icon'        => 'far fa-fw fa-file',
+        ],
+        [
+            'text'        => 'Pedidos Oficiales',
+            'url'         => '/oficial',
+            'icon'        => 'far fa-fw fa-file',
+        ],
+        [
             'text' => 'Usuarios',
             'url'  => '/personas',
+            'icon' => 'fas fa-fw fa-user',
+        ],
+        [
+            'text' => 'Clientes',
+            'url'  => '/clientes',
+            'icon' => 'fas fa-fw fa-user',
+        ],
+        [
+            'text' => 'Administradores',
+            'url'  => '/administradores',
             'icon' => 'fas fa-fw fa-user',
         ],
         [

@@ -3,20 +3,27 @@
 @section('title', 'Personas')
 
 @section('content_header')
-    <h1>Listado de Personas</h1>
+    @if (Request::is('clientes*'))
+        <h1>Listado de Cliente</h1>
+    @elseif (Request::is('administradores*'))
+        <h1>Listado de Administradores</h1>
+    @endif
 @stop
 
 @section('content')
-    <a href="personas/create" class="btn btn-primary ">Registrar</a>
+    <a href="personas/create" class="btn btn-primary">Registrar</a>
     <br> <br>
     <table id="personas" class="table table-striped table-bordered" style="width: 100%">
         <thead class="bg-primary text-white">
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Nombre</th>
-                <th scope="col">Email</th>
                 <th scope="col">Telefono</th>
-                <th scope="col">Tipo Usuario</th>
+                @if (Request::is('clientes*'))
+                    <th scope="col">Foto</th>
+                @elseif (Request::is('administradores*'))
+                    <th scope="col">Email</th>
+                @endif
                 <th scope="col">Acciones</th>
             </tr>
         </thead>
@@ -25,9 +32,18 @@
                 <tr>
                     <td>{{ $persona->id }}</td>
                     <td>{{ $persona->name }}</td>
-                    <td>{{ $persona->email }}</td>
                     <td>{{ $persona->telefono }}</td>
-                    <td>{{ $persona->tipo_usuario }}</td>
+                    @if (Request::is('clientes*'))
+                        <td>
+                            @if ($persona->foto)
+                                <img src="{{ asset($persona->foto) }}" alt="Foto del usuario" width="70" height="70">
+                            @else
+                                <p>No se ha cargado ninguna foto</p>
+                            @endif
+                        </td>
+                    @elseif (Request::is('administradores*'))
+                        <td>{{ $persona->email }}</td>
+                    @endif
                     <td>
                         <form class="formulario-eliminar" action="{{ route('personas.destroy', $persona->id) }}"
                             method="POST">

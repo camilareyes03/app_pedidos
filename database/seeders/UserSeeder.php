@@ -41,7 +41,7 @@ class UserSeeder extends Seeder
                 'ci' => '44613255',
                 'telefono' => '71270000',
                 'password' => null,
-                'tipo_usuario' => 'repartidor',
+                'tipo_usuario' => 'cliente',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -61,7 +61,7 @@ class UserSeeder extends Seeder
                 'ci' => '84651616',
                 'telefono' => '79330023',
                 'password' => null,
-                'tipo_usuario' => 'repartidor',
+                'tipo_usuario' => 'cliente',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
