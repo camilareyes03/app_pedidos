@@ -67,6 +67,13 @@ class DetallePedidoController extends Controller
             $detallePedido->cantidad = $cantidad;
             $detallePedido->monto = $subTotal;
             $detallePedido->save();
+
+            // Verificar el tipo de pedido y actualizar el stock del producto
+            $pedido = Pedido::find($pedidoId);
+            if ($pedido->tipo_pedido === 'oficial') {
+                $producto->stock -= $cantidad;
+                $producto->save();
+            }
         }
 
         // Actualizar el campo montoTotal del pedido correspondiente
@@ -75,6 +82,7 @@ class DetallePedidoController extends Controller
 
         return redirect()->route('pedidos.index')->with('success-detalle', 'El producto se ha guardado exitosamente.');
     }
+
 
 
     /**
