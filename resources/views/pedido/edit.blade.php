@@ -9,27 +9,29 @@
 @section('content')
     <form action="{{ route('pedidos.update', $pedido->id) }}" method="POST">
         @csrf
-        @method('PUT')
+        @method('PUT') <!-- Usamos el método PUT para actualizar el pedido existente -->
         <div class="mb-3">
             <label for="fecha" class="form-label">Fecha</label>
             <input type="date" id="fecha" name="fecha" class="form-control" tabindex="1" value="{{ $pedido->fecha }}">
+            @error('fecha')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
         </div>
-
         <div class="mb-3">
-            <label for="estado" class="form-label">Estado del Pedido</label>
-            <select id="estado" name="estado" class="form-control" tabindex="2">
-                <option value="esperando" {{ $pedido->estado === 'esperando' ? 'selected' : '' }}>En Espera</option>
-                <option value="entregado" {{ $pedido->estado === 'entregado' ? 'selected' : '' }}>Entregado</option>
-                <option value="cancelado" {{ $pedido->estado === 'cancelado' ? 'selected' : '' }}>Cancelado</option>
+            <label for="tipo_pedido" class="form-label">Tipo de Pedido</label>
+            <select id="tipo_pedido" name="tipo_pedido" class="form-control" tabindex="2">
+                <option value="proforma" {{ $pedido->tipo_pedido == 'proforma' ? 'selected' : '' }}>Proforma</option>
+                <option value="oficial" {{ $pedido->tipo_pedido == 'oficial' ? 'selected' : '' }}>Oficial</option>
             </select>
-            @error('estado')
+            @error('tipo_pedido')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
 
         <div class="mb-3">
-            <label for="cliente_id" class="form-label">Cliente</label>
+            <label for="cliente_id" class a="form-label">Cliente</label>
             <select id="cliente_id" name="cliente_id" class="form-control" tabindex="3">
+                <option value="">Seleccionar un cliente</option>
                 @foreach ($clientes as $cliente)
                     <option value="{{ $cliente->id }}" {{ $pedido->cliente_id == $cliente->id ? 'selected' : '' }}>{{ $cliente->name }}</option>
                 @endforeach
@@ -39,38 +41,42 @@
             @enderror
         </div>
 
-        <div class="mb-3">
-            <label for="repartidor_id" class="form-label">Repartidor</label>
-            <select id="repartidor_id" name="repartidor_id" class="form-control" tabindex="4">
-                @foreach ($repartidores as $repartidor)
-                    <option value="{{ $repartidor->id }}" {{ $pedido->repartidor_id == $repartidor->id ? 'selected' : '' }}>{{ $repartidor->name }}</option>
-                @endforeach
+        <div class="mb-3" id="tipo_pago_container" style="display: {{ $pedido->tipo_pedido === 'oficial' ? 'block' : 'none' }};">
+            <label for="tipo_pago" class="form-label">Tipo de Pago</label>
+            <select id="tipo_pago" name="tipo_pago" class="form-control" tabindex="5">
+                <option value="qr" {{ $pedido->tipo_pago === 'qr' ? 'selected' : '' }}>QR</option>
+                <option value="tarjeta" {{ $pedido->tipo_pago === 'tarjeta' ? 'selected' : '' }}>Tarjeta</option>
+                <option value="efectivo" {{ $pedido->tipo_pago === 'efectivo' ? 'selected' : '' }}>Efectivo</option>
             </select>
-            @error('repartidor_id')
+            @error('tipo_pago')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
 
-        <a href="/pedidos" class="btn btn-secondary" tabindex="6">Cancelar</a>
+        <a href="{{ route('pedidos.index') }}" class="btn btn-secondary" tabindex="6">Cancelar</a>
         <button style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" type="submit" class="btn btn-primary" tabindex="7">Guardar</button>
     </form>
 @stop
 
-@section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
-@stop
-
 @section('js')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
-    @if (session('success') == 'ok')
-        <script>
-            Swal.fire({
-                title: '¡Éxito!',
-                text: 'El pedido se ha guardado exitosamente.',
-                icon: 'success'
+    <script>
+        $(document).ready(function() {
+            $('#tipo_pedido').change(function() {
+                var selectedOption = $(this).val();
+                var tipoPagoContainer = $('#tipo_pago_container');
+
+                if (selectedOption === 'oficial') {
+                    tipoPagoContainer.show();
+                } else {
+                    tipoPagoContainer.hide();
+                }
             });
-        </script>
-    @endif
-    @parent
+        });
+    </script>
 @stop

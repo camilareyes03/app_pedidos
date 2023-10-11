@@ -104,8 +104,6 @@ class PedidoController extends Controller
     }
 
 
-
-
     /**
      * Display the specified resource.
      */
@@ -121,31 +119,32 @@ class PedidoController extends Controller
     {
         $pedido = Pedido::find($id);
         $clientes = User::where('tipo_usuario', 'cliente')->get();
-        $repartidores = User::where('tipo_usuario', 'repartidor')->get();
 
-        return view('pedido.edit', compact('pedido', 'clientes', 'repartidores'));
+        return view('pedido.edit', compact('pedido', 'clientes'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Pedido $pedido)
     {
         $this->validarDatos($request);
 
-        $pedido = Pedido::find($id);
-        $pedido->fecha = $request->get('fecha');
+        // Actualiza los campos del pedido con los datos del formulario
+        $pedido->fecha = $request->input('fecha');
         $pedido->cliente_id = $request->input('cliente_id');
-        $pedido->repartidor_id = $request->input('repartidor_id');
 
-        // Agregar el estado del pedido
-        $pedido->estado = $request->input('estado');
+        if ($request->input('tipo_pedido') === 'oficial') {
+            $pedido->tipo_pago = $request->input('tipo_pago');
+        } else {
+            $pedido->tipo_pago = null;
+        }
 
+        $pedido->tipo_pedido = $request->input('tipo_pedido');
         $pedido->save();
 
-        return redirect('pedidos')->with('edit-success', 'El pedido se ha actualizado exitosamente.');
+        return redirect('pedidos')->with('success', 'El pedido se ha actualizado exitosamente.');
     }
-
 
 
     /**

@@ -161,6 +161,15 @@
             )
         </script>
     @endif
+    @if (session('eliminar-detalle') == 'ok')
+        <script>
+            Swal.fire(
+                'Eliminado!',
+                'El producto ha sido eliminado del pedido exitosamente',
+                'success'
+            )
+        </script>
+    @endif
     @if (session('success'))
         <script>
             Swal.fire(

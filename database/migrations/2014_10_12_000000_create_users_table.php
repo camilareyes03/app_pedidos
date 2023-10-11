@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('ci', 11)->nullable();
             $table->string('telefono', 8)->nullable();
             $table->text('foto')->nullable();
-            $table->string('razon_social')->nullable();
             $table->string('tipo_usuario')->nullable(); //A-C
 
             $table->timestamps();
