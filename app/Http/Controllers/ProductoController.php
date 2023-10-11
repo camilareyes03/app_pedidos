@@ -20,6 +20,11 @@ class ProductoController extends Controller
     public function create()
     {
         $categorias= Categoria::all();
+        if ($categorias->isEmpty()) {
+            // Si no hay categorías, muestra una alerta SweetAlert
+            return redirect()->route('categorias.create')
+                ->with('warning', 'No tienes categorías creadas. Debes crear al menos una.');
+        }
         return view('producto.create', compact('categorias'));
     }
 

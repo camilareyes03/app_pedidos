@@ -17,8 +17,15 @@ class PedidoController extends Controller
         $pedidos = Pedido::all();
         $productos = Producto::all();
 
+        // Verifica si no hay productos y redirige al usuario a la creación de productos
+        if ($productos->isEmpty()) {
+            return redirect()->route('productos.create')
+                ->with('warning', 'No tienes productos registrados. Debes crear al menos uno.');
+        }
+
         return view('pedido.index', compact('pedidos', 'productos'));
     }
+
 
     public function proforma()
     {
@@ -41,15 +48,14 @@ class PedidoController extends Controller
      */
 
      public function create()
-     {
-         // Obtener la lista de usuarios que son clientes
-         $clientes = User::where('tipo_usuario', 'cliente')->get();
-         //dd($clientes);
-         $repartidores = User::where('tipo_usuario', 'repartidor')->get();
-
-         return view('pedido.create', compact('clientes', 'repartidores'));
-     }
-
+    {
+        $clientes = User::where('tipo_usuario', 'cliente')->get();
+        if ($clientes->isEmpty()) {
+            return redirect()->route('personas.create')
+                ->with('warning', 'No tienes clientes registrados. Debes registrar al menos uno.');
+        }
+        return view('pedido.create', compact('clientes'));
+    }
 
     /**
      * Store a newly created resource in storage.

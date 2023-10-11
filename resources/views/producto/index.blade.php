@@ -7,7 +7,8 @@
 @stop
 
 @section('content')
-    <a style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" href="productos/create" class="btn btn-primary ">Registrar</a>
+    <a style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" href="productos/create"
+        class="btn btn-primary ">Registrar</a>
     <br> <br>
     <table id="productos" class="table table-striped table-bordered" style="width: 100%">
         <thead class="bg-primary text-white">
@@ -30,8 +31,7 @@
                     <td>{{ $producto->stock }}</td>
                     <td>
                         @if ($producto->foto)
-                            <img src="{{ asset($producto->foto) }}" alt="Foto del producto" width="70"
-                                height="70">
+                            <img src="{{ asset($producto->foto) }}" alt="Foto del producto" width="70" height="70">
                         @else
                             <p>No se ha cargado ninguna foto del producto</p>
                         @endif
@@ -81,6 +81,7 @@
             )
         </script>
     @endif
+
     @if (session('success'))
         <script>
             Swal.fire(
