@@ -24,7 +24,7 @@
                 <th style="background-color: #4b545c" scope="col">Fecha</th>
                 <th style="background-color: #4b545c" scope="col">Tipo</th>
                 @if (request()->is('oficial*'))
-                    <th scope="col">Método de Pago</th>
+                    <th style="background-color: #4b545c" scope="col">Método de Pago</th>
                 @endif
                 <th  style="background-color: #4b545c" scope="col">Monto Total</th>
                 <th  style="background-color: #4b545c" scope="col">Acciones</th>

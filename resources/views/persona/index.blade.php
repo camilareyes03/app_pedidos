@@ -20,9 +20,9 @@
                 <th style="background-color: #4b545c" scope="col">Nombre</th>
                 <th style="background-color: #4b545c" scope="col">Telefono</th>
                 @if (Request::is('clientes*'))
-                    <th scope="col">Foto</th>
+                    <th style="background-color: #4b545c" scope="col">Foto</th>
                 @elseif (Request::is('administradores*'))
-                    <th scope="col">Email</th>
+                    <th style="background-color: #4b545c" scope="col">Email</th>
                 @endif
                 <th style="background-color: #4b545c" scope="col">Acciones</th>
             </tr>

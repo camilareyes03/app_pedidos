@@ -307,11 +307,32 @@ return [
             'text' => 'search',
         ],
         [
+            'text'    => 'Pedidos',
+            'icon'    => 'fa fa-shopping-cart',
+            'submenu' => [
+                [
+                    'text' => 'Lista de Pedidos',
+                    'url'  => '/pedidos',
+                    'icon' => 'fa fa-list',
+                ],
+                [
+                    'text' => 'Proformas',
+                    'url'  => '/proforma',
+                    'icon' => 'fa fa-file',
+                ],
+                [
+                    'text' => 'Pedidos Oficiales',
+                    'url'  => '/oficial',
+                    'icon' => 'fas fa-file',
+                ],
+            ],
+        ],
+        [
             'text' => 'blog',
             'url'  => 'admin/blog',
             'can'  => 'manage-blog',
         ],
-        [
+       /*  [
             'text'        => 'Pedidos',
             'url'         => '/pedidos',
             'icon'        => 'far fa-fw fa-file',
@@ -325,8 +346,64 @@ return [
             'text'        => 'Pedidos Oficiales',
             'url'         => '/oficial',
             'icon'        => 'far fa-fw fa-file',
+        ], */
+        [
+            'text'    => 'Usuarios',
+            'icon'    => 'fas fa-users',
+            'submenu' => [
+                [
+                    'text' => 'Lista de Usuarios',
+                    'url'  => '/personas',
+                    'icon' => 'fas fa-users',
+                ],
+                [
+                    'text' => 'Lista de Clientes',
+                    'url'  => '/clientes',
+                    'icon' => 'fas fa-user-circle',
+                ],
+                [
+                    'text' => 'Lista de Administradores',
+                    'url'  => '/administradores',
+                    'icon' => 'fas fa-user-circle',
+                ],
+            ],
+        ],
+
+        [
+            'text'    => 'Productos',
+            'icon'    => 'fa fa-truck',
+            'submenu' => [
+                [
+                    'text' => 'Lista de Productos',
+                    'url'  => '/productos',
+                    'icon' => 'fa fa-list',
+                ],
+                [
+                    'text' => 'Registrar Producto',
+                    'url'  => '/productos/create',
+                    'icon' => 'fa fa-plus',
+                ],
+            ],
         ],
         [
+            'text'    => 'Categorias',
+            'icon'    => 'fa fa-cubes',
+            'submenu' => [
+                [
+                    'text' => 'Lista de Categorias',
+                    'url'  => '/categorias',
+                    'icon' => 'fa fa-list',
+                ],
+                [
+                    'text' => 'Registrar Categoria',
+                    'url'  => '/categorias/create',
+                    'icon' => 'fa fa-plus',
+                ],
+            ],
+        ],
+
+
+       /*  [
             'text' => 'Usuarios',
             'url'  => '/personas',
             'icon' => 'fas fa-fw fa-user',
@@ -340,8 +417,8 @@ return [
             'text' => 'Administradores',
             'url'  => '/administradores',
             'icon' => 'fas fa-fw fa-user',
-        ],
-        [
+        ], */
+        /* [
             'text' => 'Productos',
             'url'  => '/productos',
             'icon' => 'fas fa-fw fa-user',
@@ -350,7 +427,7 @@ return [
             'text' => 'Categorias',
             'url'  => '/categorias',
             'icon' => 'fas fa-fw fa-user',
-        ],
+        ], */
 
     ],
 
