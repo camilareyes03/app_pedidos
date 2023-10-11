@@ -55,6 +55,6 @@
 
 
         <a href="/pedidos" class="btn btn-secondary" tabindex="6">Cancelar</a>
-        <button type="submit" class="btn btn-primary" tabindex="7">Guardar</button>
+        <button style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" type="submit" class="btn btn-primary" tabindex="7">Guardar</button>
     </form>
 @stop

@@ -34,7 +34,7 @@
 
 <a href="/personas" class="btn btn-secondary" tabindex="4">Volver</a>
 @if($persona->tipo_usuario === 'cliente')
-    <a href="{{ route('ubicaciones.index', $persona->id) }}" class="btn btn-primary">Ubicaciones</a>
+    <a style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" href="{{ route('ubicaciones.index', $persona->id) }}" class="btn btn-primary">Ubicaciones</a>
 @endif
 
 @stop

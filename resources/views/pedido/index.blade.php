@@ -7,18 +7,18 @@
 @stop
 
 @section('content')
-    <a href="pedidos/create" class="btn btn-primary ">Registrar</a>
+    <a href="pedidos/create" style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" class="btn btn-primary">Registrar</a>
     <br> <br>
-    <table id="pedidos" class="table table-striped table-bordered" style="width: 100%">
-        <thead class="bg-primary text-white">
+    <table id="pedidos" class="table table-striped table-bordered" style="width: 100%; ">
+        <thead class="bg-primary text-white" >
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Cliente</th>
-                <th scope="col">Repartidor</th>
-                <th scope="col">Fecha</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Monto Total</th>
-                <th scope="col">Acciones</th>
+                <th scope="col" style="background-color: #4b545c">ID</th>
+                <th scope="col" style="background-color: #4b545c">Cliente</th>
+                <th scope="col" style="background-color: #4b545c">Repartidor</th>
+                <th scope="col" style="background-color: #4b545c">Fecha</th>
+                <th scope="col" style="background-color: #4b545c">Estado</th>
+                <th scope="col" style="background-color: #4b545c">Monto Total</th>
+                <th scope="col" style="background-color: #4b545c">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -33,7 +33,7 @@
                     <td>
                         <form class="formulario-eliminar" action="{{ route('pedidos.destroy', $pedido->id) }}"
                             method="POST">
-                            <a href="{{ route('detallepedido.show', $pedido->id) }}" class="btn btn-info">
+                            <a  href="{{ route('detallepedido.show', $pedido->id) }}" class="btn btn-info">
                                 <i class="fas fa-eye"></i> Ver Detalle
                             </a>
 

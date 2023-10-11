@@ -7,14 +7,14 @@
 @stop
 
 @section('content')
-    <a href="categorias/create" class="btn btn-primary ">Registrar</a>
+    <a style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" href="categorias/create" class="btn btn-primary ">Registrar</a>
     <br> <br>
     <table id="categorias" class="table table-striped table-bordered" style="width: 100%">
         <thead class="bg-primary text-white">
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Acciones</th>
+                <th scope="col" style="background-color: #4b545c">ID</th>
+                <th scope="col" style="background-color: #4b545c">Nombre</th>
+                <th scope="col" style="background-color: #4b545c">Acciones</th>
             </tr>
         </thead>
         <tbody>
