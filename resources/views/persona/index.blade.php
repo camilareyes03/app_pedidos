@@ -11,20 +11,20 @@
 @stop
 
 @section('content')
-    <a href="personas/create" class="btn btn-primary">Registrar</a>
+    <a style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" href="personas/create" class="btn btn-primary ">Registrar</a>
     <br> <br>
     <table id="personas" class="table table-striped table-bordered" style="width: 100%">
         <thead class="bg-primary text-white">
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Telefono</th>
+                <th style="background-color: #4b545c" scope="col">ID</th>
+                <th style="background-color: #4b545c" scope="col">Nombre</th>
+                <th style="background-color: #4b545c" scope="col">Telefono</th>
                 @if (Request::is('clientes*'))
                     <th scope="col">Foto</th>
                 @elseif (Request::is('administradores*'))
                     <th scope="col">Email</th>
                 @endif
-                <th scope="col">Acciones</th>
+                <th style="background-color: #4b545c" scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>

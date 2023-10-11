@@ -7,18 +7,18 @@
 @stop
 
 @section('content')
-    <a href="productos/create" class="btn btn-primary ">Registrar</a>
+    <a style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" href="productos/create" class="btn btn-primary ">Registrar</a>
     <br> <br>
     <table id="productos" class="table table-striped table-bordered" style="width: 100%">
         <thead class="bg-primary text-white">
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Precio</th>
-                <th scope="col">Stock</th>
-                <th scope="col">Foto</th>
-                <th scope="col">Categoria</th>
-                <th scope="col">Acciones</th>
+                <th style="background-color: #4b545c" scope="col">ID</th>
+                <th style="background-color: #4b545c" scope="col">Nombre</th>
+                <th style="background-color: #4b545c" scope="col">Precio</th>
+                <th style="background-color: #4b545c" scope="col">Stock</th>
+                <th style="background-color: #4b545c" scope="col">Foto</th>
+                <th style="background-color: #4b545c" scope="col">Categoria</th>
+                <th style="background-color: #4b545c" scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>

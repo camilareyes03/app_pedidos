@@ -13,20 +13,21 @@
 @stop
 
 @section('content')
-    <a href="pedidos/create" class="btn btn-primary ">Registrar</a>
+    <a href="pedidos/create" style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);"
+        class="btn btn-primary">Registrar</a>
     <br> <br>
-    <table id="pedidos" class="table table-striped table-bordered" style="width: 100%">
+    <table id="pedidos" class="table table-striped table-bordered" style="width: 100%; ">
         <thead class="bg-primary text-white">
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Cliente</th>
-                <th scope="col">Fecha</th>
-                <th scope="col">Tipo</th>
+                <th style="background-color: #4b545c" scope="col">ID</th>
+                <th style="background-color: #4b545c" scope="col">Cliente</th>
+                <th style="background-color: #4b545c" scope="col">Fecha</th>
+                <th style="background-color: #4b545c" scope="col">Tipo</th>
                 @if (request()->is('oficial*'))
                     <th scope="col">Método de Pago</th>
                 @endif
-                <th scope="col">Monto Total</th>
-                <th scope="col">Acciones</th>
+                <th  style="background-color: #4b545c" scope="col">Monto Total</th>
+                <th  style="background-color: #4b545c" scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>

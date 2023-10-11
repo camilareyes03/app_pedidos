@@ -30,7 +30,7 @@
         </div>
 
         <a href="/pedidos" class="btn btn-secondary" tabindex="4">Cancelar</a>
-        <button type="submit" class="btn btn-primary" tabindex="3">Guardar</button>
+        <button style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" type="submit" class="btn btn-primary" tabindex="3">Guardar</button>
     </form>
 @stop
 

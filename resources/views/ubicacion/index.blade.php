@@ -7,16 +7,16 @@
 @stop
 
 @section('content')
-<a href="{{route('ubicaciones.create', $cliente_id)}}" class="btn btn-primary ">Registrar</a>
+<a style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" href="{{route('ubicaciones.create', $cliente_id)}}" class="btn btn-primary ">Registrar</a>
 <br> <br>
 <table id="ubicaciones" class="table table-striped table-bordered" style="width: 100%">
     <thead class="bg-primary text-white">
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Referencia</th>
-            <th scope="col">Link</th>
-            <th scope="col">Acciones</th>
+            <th scope="col" style="background-color: #4b545c">ID</th>
+            <th scope="col" style="background-color: #4b545c">Nombre</th>
+            <th scope="col" style="background-color: #4b545c">Referencia</th>
+            <th scope="col" style="background-color: #4b545c">Link</th>
+            <th scope="col" style="background-color: #4b545c">Acciones</th>
         </tr>
     </thead>
     <tbody>

@@ -8,7 +8,7 @@
 
 @section('content')
     <br>
-    <a href="{{ route('pedidos.index') }}" class="btn btn-primary">Volver</a> <!-- Botón Volver -->
+    <a style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" href="{{ route('pedidos.index') }}" class="btn btn-primary">Volver</a> <!-- Botón Volver -->
     <br> <br>
     <h2>Monto Total: {{ number_format($montoTotal, 2) }}</h2>
 
@@ -16,13 +16,13 @@
     <table id="detallepedido" class="table table-striped table-bordered" style="width: 100%">
         <thead class="bg-primary text-white">
             <tr>
-                <th>ID</th>
-                <th>ID Pedido</th>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Subtotal</th>
-                <th>Acciones</th>
+                <th style="background-color: #4b545c">ID</th>
+                <th style="background-color: #4b545c">ID Pedido</th>
+                <th style="background-color: #4b545c">Producto</th>
+                <th style="background-color: #4b545c">Precio</th>
+                <th style="background-color: #4b545c">Cantidad</th>
+                <th style="background-color: #4b545c">Subtotal</th>
+                <th style="background-color: #4b545c">Acciones</th>
             </tr>
         </thead>
         <tbody>
