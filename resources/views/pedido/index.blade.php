@@ -26,8 +26,8 @@
                 @if (request()->is('oficial*'))
                     <th style="background-color: #4b545c" scope="col">Método de Pago</th>
                 @endif
-                <th  style="background-color: #4b545c" scope="col">Monto Total</th>
-                <th  style="background-color: #4b545c" scope="col">Acciones</th>
+                <th style="background-color: #4b545c" scope="col">Monto Total</th>
+                <th style="background-color: #4b545c" scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -44,28 +44,34 @@
                     <td>
                         <form class="formulario-eliminar" action="{{ route('pedidos.destroy', $pedido->id) }}"
                             method="POST">
+                            <a href="{{ route('pedido.pdf', ['id' => $pedido->id]) }}" class="btn btn-danger">
+                                <i class="fas fa-file-pdf"></i>
+                            </a>
+
+                            <a href="{{ route('pedido.csv', ['id' => $pedido->id]) }}" class="btn btn-success">
+                                <i class="fas fa-file-csv"></i>
+                            </a>
+
                             <a href="{{ route('detallepedido.show', $pedido->id) }}" class="btn btn-info">
                                 <i class="fas fa-eye"></i> Ver Detalle
                             </a>
 
-                            @if ($pedido->estado !== 'entregado')
-                                <button type="button" class="btn btn-secondary btn-detalles"
-                                    data-pedido-id="{{ $pedido->id }}" data-toggle="modal"
-                                    data-target="#agregarProductoModal">
-                                    Agregar Productos
-                                </button>
+                            <button type="button" class="btn btn-secondary btn-detalles"
+                                data-pedido-id="{{ $pedido->id }}" data-toggle="modal"
+                                data-target="#agregarProductoModal">
+                                Agregar Productos
+                            </button>
 
-                                <a href="{{ route('pedidos.edit', $pedido->id) }}" class="btn btn-warning">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i> Eliminar
-                                </button>
-                            @else
-                                <span class="text-muted"><i class="fas fa-ban"></i> No disponible</span>
-                            @endif
+                            <a href="{{ route('pedidos.edit', $pedido->id) }}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+
+
                         </form>
                     </td>
                 </tr>

@@ -4,7 +4,7 @@
 
 @section('content_header')
     <h1>Crear Pedido</h1>
-    </stop>
+@stop
 
 @section('content')
     <form action="{{ route('pedidos.store') }}" method="POST">

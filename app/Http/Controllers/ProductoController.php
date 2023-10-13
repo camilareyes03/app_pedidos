@@ -6,6 +6,9 @@ use App\Models\Producto;
 use Illuminate\Http\Request;
 use App\Models\Categoria;
 use Illuminate\Support\Facades\Storage;
+use Dompdf\Dompdf;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\View;
 
 class ProductoController extends Controller
 {
@@ -13,7 +16,10 @@ class ProductoController extends Controller
     {
         $productos = Producto::all();
         $productos->load('categoria');
-        return view('producto.index')->with('productos', $productos);
+        $pdfRoute = route('producto.pdf');
+        $csvRoute = route('producto.csv');
+
+        return view('producto.index', compact('productos', 'pdfRoute','csvRoute'));
     }
 
 
@@ -131,5 +137,47 @@ class ProductoController extends Controller
         ];
 
         $request->validate($reglas, $mensajes);
+    }
+
+
+    public function generarPdf()
+    {
+        $productos = Producto::all();
+        $dompdf = new Dompdf();
+
+        $html = View::make('producto.pdf', compact('productos'))->render();
+        $dompdf->loadHtml($html);
+        $dompdf->render();
+
+        return $dompdf->stream("Catalogo_Productos.pdf");
+    }
+
+    public function generarCsv()
+    {
+        $productos = Producto::all();
+        // Crear el contenido CSV
+        $csvData = '';
+        $csvHeader = ['ID', 'Nombre', 'Precio', 'Stock'];
+        $csvData .= implode(',', $csvHeader) . "\n";
+        foreach ($productos as $producto) {
+            $csvRow = [
+                $producto->id,
+                $producto->nombre,
+                $producto->precio,
+                $producto->stock
+            ];
+            $csvData .= implode(',', $csvRow) . "\n";
+        }
+
+        // Establecer las cabeceras de respuesta
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=Catalogo_Productos.csv',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+        $response = new Response($csvData, 200, $headers);
+        return $response;
     }
 }

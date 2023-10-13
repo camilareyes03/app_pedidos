@@ -32,6 +32,7 @@ class DetallePedidoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
         $this->validarDetallePedido($request);
@@ -156,7 +157,6 @@ class DetallePedidoController extends Controller
         // Redirigir a donde desees después de la actualización
         return redirect('/pedidos')->with('success', 'El detalle del pedido se ha actualizado exitosamente.');
     }
-
 
 
 

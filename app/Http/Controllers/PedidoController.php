@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DetallePedido;
 use App\Models\Pedido;
 use App\Models\Producto;
 use App\Models\User;
+use Dompdf\Dompdf;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class PedidoController extends Controller
 {
@@ -16,32 +20,60 @@ class PedidoController extends Controller
     {
         $pedidos = Pedido::all();
         $productos = Producto::all();
-
-        // Verifica si no hay productos y redirige al usuario a la creación de productos
         if ($productos->isEmpty()) {
             return redirect()->route('productos.create')
                 ->with('warning', 'No tienes productos registrados. Debes crear al menos uno.');
         }
 
-        return view('pedido.index', compact('pedidos', 'productos'));
+        // Mapea los pedidos a sus enlaces de descarga de PDF
+        $pdfLinks = $pedidos->map(function ($pedido) {
+            return [
+                'pedido' => $pedido,
+                'pdfRoute' => route('pedido.pdf', ['id' => $pedido->id]),
+                'csvRoute' => route('pedido.csv', ['id' => $pedido->id]),
+            ];
+        });
+
+        return view('pedido.index', compact('pdfLinks', 'productos', 'pedidos'));
     }
 
 
     public function proforma()
     {
+        $tipo = 'proforma';
         $pedidos = Pedido::where('tipo_pedido', 'proforma')->get();
         $productos = Producto::all();
 
-        return view('pedido.index', compact('pedidos', 'productos'));
+        // Mapea los pedidos a sus enlaces de descarga de PDF
+        $pdfLinks = $pedidos->map(function ($pedido) {
+            return [
+                'pedido' => $pedido,
+                'pdfRoute' => route('pedido.pdf', ['id' => $pedido->id]),
+                'csvRoute' => route('pedido.csv', ['id' => $pedido->id]),
+            ];
+        });
+
+        return view('pedido.index', compact('pdfLinks', 'productos', 'pedidos'));
     }
 
     public function oficial()
     {
+        $tipo = 'oficial';
         $pedidos = Pedido::where('tipo_pedido', 'oficial')->get();
         $productos = Producto::all();
 
-        return view('pedido.index', compact('pedidos', 'productos'));
+        // Mapea los pedidos a sus enlaces de descarga de PDF
+        $pdfLinks = $pedidos->map(function ($pedido) {
+            return [
+                'pedido' => $pedido,
+                'pdfRoute' => route('pedido.pdf', ['id' => $pedido->id]),
+                'csvRoute' => route('pedido.csv', ['id' => $pedido->id]),
+            ];
+        });
+
+        return view('pedido.index', compact('pdfLinks', 'productos', 'pedidos'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -130,21 +162,48 @@ class PedidoController extends Controller
     {
         $this->validarDatos($request);
 
+        // Verificar si el tipo de pedido ha cambiado
+        $tipoPedidoAnterior = $pedido->tipo_pedido;
+        $tipoPedidoNuevo = $request->input('tipo_pedido');
+
+        if ($tipoPedidoAnterior !== $tipoPedidoNuevo) {
+            if ($tipoPedidoNuevo === 'oficial') {
+                // El tipo de pedido cambió a 'oficial', por lo que necesitamos actualizar el stock de los productos en los detalles del pedido
+                $detallesPedido = DetallePedido::where('pedido_id', $pedido->id)->get();
+
+                foreach ($detallesPedido as $detalle) {
+                    $producto = Producto::find($detalle->producto_id);
+                    $producto->stock -= $detalle->cantidad;
+                    $producto->save();
+                }
+            } elseif ($tipoPedidoAnterior === 'oficial') {
+                // El tipo de pedido cambió de 'oficial' a otro tipo, por lo que necesitamos revertir la actualización del stock
+                $detallesPedido = DetallePedido::where('pedido_id', $pedido->id)->get();
+
+                foreach ($detallesPedido as $detalle) {
+                    $producto = Producto::find($detalle->producto_id);
+                    $producto->stock += $detalle->cantidad;
+                    $producto->save();
+                }
+            }
+        }
+
         // Actualiza los campos del pedido con los datos del formulario
         $pedido->fecha = $request->input('fecha');
         $pedido->cliente_id = $request->input('cliente_id');
 
-        if ($request->input('tipo_pedido') === 'oficial') {
+        if ($tipoPedidoNuevo === 'oficial') {
             $pedido->tipo_pago = $request->input('tipo_pago');
         } else {
             $pedido->tipo_pago = null;
         }
 
-        $pedido->tipo_pedido = $request->input('tipo_pedido');
+        $pedido->tipo_pedido = $tipoPedidoNuevo;
         $pedido->save();
 
         return redirect('pedidos')->with('success', 'El pedido se ha actualizado exitosamente.');
     }
+
 
 
     /**
@@ -156,6 +215,53 @@ class PedidoController extends Controller
         $pedido->delete();
         return redirect('pedidos')->with('eliminar', 'ok');
     }
+
+
+    public function descargarPdf($id)
+    {
+        $pedido = Pedido::find($id);
+
+        $pdf = new Dompdf();
+        $html = view('pedido.pdf', compact('pedido'))->render();
+        $pdf->loadHtml($html);
+        $pdf->render();
+
+        return $pdf->stream("pedido_{$id}.pdf");
+    }
+
+    public function descargarCsv($id)
+    {
+        $pedido = Pedido::find($id);
+        $detalles = $pedido->detallePedido;
+
+        // Crear el contenido CSV para los detalles del pedido
+        $csvData = '';
+        $csvHeader = ['Producto', 'Cantidad', 'Monto'];
+        $csvData .= implode(',', $csvHeader) . "\n";
+        foreach ($detalles as $detalle) {
+            $csvRow = [
+                $detalle->producto->nombre,
+                $detalle->cantidad,
+                $detalle->monto,
+            ];
+            $csvData .= implode(',', $csvRow) . "\n";
+        }
+
+        // Establecer las cabeceras de respuesta
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=pedido_{$id}_detalles.csv",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+        $response = new Response($csvData, 200, $headers);
+
+        return $response;
+    }
+
+
+
 
 
 

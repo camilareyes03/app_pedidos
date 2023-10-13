@@ -29,6 +29,9 @@ Route::middleware([
 });
 
 Route::resource('personas', 'App\Http\Controllers\UserController')->middleware('auth');
+Route::get('user/pdf/{tipo}', 'App\Http\Controllers\UserController@generarPdf')->name('user.pdf');
+Route::get('user/csv/{tipo}', 'App\Http\Controllers\UserController@generarCsv')->name('user.csv');
+
 Route::get('/clientes', 'App\Http\Controllers\UserController@clientes')->name('clientes.index');
 Route::get('/administradores', 'App\Http\Controllers\UserController@administradores')->name('administradores.index');
 
@@ -45,8 +48,17 @@ Route::resource('pedidos', 'App\Http\Controllers\PedidoController')->middleware(
 Route::get('/proforma', 'App\Http\Controllers\PedidoController@proforma')->name('pedidos.proforma');
 Route::get('/oficial', 'App\Http\Controllers\PedidoController@oficial')->name('pedidos.oficial');
 
+Route::get('pedido/{id}/pdf', 'App\Http\Controllers\PedidoController@descargarPdf')->name('pedido.pdf');
+Route::get('pedido/{id}/csv', 'App\Http\Controllers\PedidoController@descargarCsv')->name('pedido.csv');
+
 Route::resource('detallepedido', 'App\Http\Controllers\DetallePedidoController')->middleware('auth');
 
 Route::resource('categorias', 'App\Http\Controllers\CategoriaController')->middleware('auth');
+Route::get('/categoria/pdf', 'App\Http\Controllers\CategoriaController@generarPdf')->name('categoria.pdf');
+Route::get('/categoria/csv', 'App\Http\Controllers\CategoriaController@generarCsv')->name('categoria.csv');
+
+
 Route::resource('productos', 'App\Http\Controllers\ProductoController')->middleware('auth');
+Route::get('/producto/pdf', 'App\Http\Controllers\ProductoController@generarPdf')->name('producto.pdf');
+Route::get('/producto/csv', 'App\Http\Controllers\ProductoController@generarCsv')->name('producto.csv');
 
