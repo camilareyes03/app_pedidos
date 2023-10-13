@@ -45,95 +45,41 @@ class UserController extends Controller
     }
 
     /**
-     * Almacena un nuevo usuario en el almacenamiento
+     * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $datosValidados = $this->validarDatos($request);
-        $usuario = $this->crearUsuario($datosValidados);
-        $this->manejarTipoUsuario($usuario, $datosValidados);
-        $usuario->save();
+        $this->validarDatos($request);
+
+        $persona = new User();
+        $persona->name = $request->input('name');
+        $persona->ci = $request->input('ci');
+        $persona->telefono = $request->input('telefono');
+        $persona->tipo_usuario = $request->input('tipo_usuario');
+
+        if ($request->input('tipo_usuario') === 'cliente') {
+            if ($request->hasFile('foto')) {
+                $request->validate([
+                    'foto' => ['image', 'nullable', 'max:2048', 'mimes:png,jpg,jpeg,gif'],
+                ]);
+
+                $foto = $request->file('foto')->store('public/productos_imagenes');
+                $url = Storage::url($foto);
+                $persona->foto = $url;
+            }
+            $persona->email = null;
+            $persona->password = null;
+        } else {
+            $persona->email = $request->input('email');
+            // Encriptar la contraseña antes de guardarla
+            $persona->password = bcrypt($request->input('password'));
+        }
+
+        $persona->save();
 
         return redirect('personas')->with('success', 'La persona se ha guardado exitosamente.');
     }
 
-    /**
-    * Valida los datos del formulario.
-    */
-    public function validarDatos(Request $request)
-    {
-        $reglas = [
-            'name' => 'required',
-            'ci' => 'min:7',
-            'telefono' => 'min:8',
-            'tipo_usuario' => ['required', 'not_in:nulo'],
-            'foto' => ($request->input('tipo_usuario') === 'cliente') ? 'nullable' : 'required',
-        ];
-
-        $mensajes = [
-            'name.required' => 'Este campo es obligatorio.',
-            'ci.min' => 'Este campo debe tener mínimo 7 valores.',
-            'telefono.min' => 'Este campo debe tener un mínimo de 8 dígitos.',
-            'tipo_usuario.not_in' => 'Por favor, selecciona una opción válida.',
-            'foto.required' => 'Este campo es obligatorio para el cliente.',
-        ];
-
-        $request->validate($reglas, $mensajes);
-    }
-
-
-    /**
-    * Crea una instancia de usuario con los datos proporcionados.
-    */
-    private function crearUsuario($datos)
-    {
-        return new User([
-            'name' => $datos['name'],
-            'ci' => $datos['ci'],
-            'telefono' => $datos['telefono'],
-            'tipo_usuario' => $datos['tipo_usuario'],
-        ]);
-    }
-
-    /**
-    * Maneja el tipo de usuario (cliente o administrador) y sus detalles específicos.
-    */
-    private function manejarTipoUsuario(User $usuario, $datos)
-    {
-        if ($datos['tipo_usuario'] === 'cliente') {
-            $this->manejarUsuarioCliente($usuario, $datos);
-        } else {
-            $this->manejarUsuarioAdministrador($usuario, $datos);
-        }
-    }
-
-    /**
-    * Maneja los detalles específicos para un usuario de tipo "cliente".
-    */
-    private function manejarUsuarioCliente(User $usuario, $datos)
-    {
-        if (isset($datos['foto'])) {
-            $usuario->foto = $this->almacenarFoto($datos['foto']);
-        }
-    }
-
-    /**
-    * Almacena una foto en el sistema de archivos y retorna su URL.
-    */
-    private function almacenarFoto($foto)
-    {
-        $ruta = $foto->store('public/productos_imagenes');
-        return Storage::url($ruta);
-    }
-
-    /**
-    * Maneja los detalles específicos para un usuario de tipo "administrador".
-    */
-    private function manejarUsuarioAdministrador(User $usuario, $datos)
-    {
-        $usuario->email = $datos['email'];
-        $usuario->password = bcrypt($datos['password']);
-    }
 
 
     /**
@@ -213,7 +159,33 @@ class UserController extends Controller
         return redirect('personas')->with('eliminar', 'ok');
     }
 
+    public function validarDatos(Request $request)
+    {
+        $reglas = [
+            'name' => 'required',
+            'ci' => 'min:7',
+            'telefono' => 'min:8',
+            'tipo_usuario' => ['required', 'not_in:nulo'],
+        ];
 
+        $mensajes = [
+            'name.required' => 'Este campo es obligatorio.',
+            'ci.min' => 'Este campo debe tener mínimo 7 valores.',
+            'telefono.min' => 'Este campo debe tener un mínimo de 8 dígitos.',
+            'tipo_usuario.not_in' => 'Por favor, selecciona una opción válida.',
+        ];
+
+        $tipo_usuario = $request->input('tipo_usuario');
+
+        switch ($tipo_usuario) {
+            case 'cliente':
+                $reglas['foto'] = 'required';
+                $mensajes['foto.required'] = 'Este campo es obligatorio para el cliente.';
+                break;
+        }
+
+        $request->validate($reglas, $mensajes);
+    }
 
     public function generarPdf($tipo)
     {

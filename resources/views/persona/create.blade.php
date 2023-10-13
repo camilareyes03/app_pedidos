@@ -114,13 +114,6 @@
         });
     </script>
 
-    <script>
-        Swal.fire(
-            'Advertencia',
-            '{{ session('warning') }}',
-            'warning'
-        );
-    </script>
 @stop
 
 @section('css')

@@ -37,31 +37,25 @@ class DetallePedidoController extends Controller
     {
         $this->validarDetallePedido($request);
 
-        // Obtener los datos del formulario
         $productoId = $request->input('producto_id');
         $cantidad = $request->input('cantidad');
         $pedidoId = $request->input('pedido_id');
 
-        // Validar si el producto ya existe en el detalle del pedido
         $detallePedidoExistente = DetallePedido::where('pedido_id', $pedidoId)
             ->where('producto_id', $productoId)
             ->first();
 
         if ($detallePedidoExistente) {
-            // Si el producto ya existe, simplemente suma la cantidad
             $detallePedidoExistente->cantidad += $cantidad;
             $detallePedidoExistente->monto = $detallePedidoExistente->cantidad * $detallePedidoExistente->producto->precio;
             $detallePedidoExistente->save();
         } else {
-            // Si el producto no existe, crea un nuevo registro
-            // Obtener el precio del producto seleccionado
+
             $producto = Producto::find($productoId);
             $precioProducto = $producto->precio;
 
-            // Calcular el subtotal
             $subTotal = $cantidad * $precioProducto;
 
-            // Guardar el detalle del pedido en la base de datos
             $detallePedido = new DetallePedido();
             $detallePedido->pedido_id = $pedidoId;
             $detallePedido->producto_id = $productoId;
@@ -69,7 +63,6 @@ class DetallePedidoController extends Controller
             $detallePedido->monto = $subTotal;
             $detallePedido->save();
 
-            // Verificar el tipo de pedido y actualizar el stock del producto
             $pedido = Pedido::find($pedidoId);
             if ($pedido->tipo_pedido === 'oficial') {
                 $producto->stock -= $cantidad;
@@ -77,7 +70,6 @@ class DetallePedidoController extends Controller
             }
         }
 
-        // Actualizar el campo montoTotal del pedido correspondiente
         $pedido = Pedido::find($pedidoId);
         $pedido->actualizarMontoTotal();
 
@@ -95,7 +87,6 @@ class DetallePedidoController extends Controller
         $detalles = $pedido->detallePedido;
         $productos = Producto::all();
 
-        // Calcular el monto total sumando todos los subtotales
         $montoTotal = $detalles->sum('monto');
 
         return view('detalle_pedido.index', compact('detalles', 'productos', 'montoTotal'));
@@ -116,45 +107,35 @@ class DetallePedidoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validar los datos del formulario
         $this->validate($request, [
             'producto_id' => 'required|exists:producto,id',
             'cantidad' => 'required|numeric|min:1',
         ]);
 
-        // Obtener el detalle a editar
         $detalle = DetallePedido::findOrFail($id);
 
-        // Obtener la nueva cantidad y el producto seleccionado
         $nuevaCantidad = $request->input('cantidad');
         $nuevoProductoId = $request->input('producto_id');
-        $pedidoId = $detalle->pedido_id; // Obtener el pedido al que pertenece el detalle
+        $pedidoId = $detalle->pedido_id;
 
-        // Calcular la diferencia en la cantidad
         $diferenciaCantidad = $nuevaCantidad - $detalle->cantidad;
 
-        // Actualizar el detalle con los nuevos valores
         $detalle->producto_id = $nuevoProductoId;
         $detalle->cantidad = $nuevaCantidad;
 
-        // Obtener el precio del producto seleccionado
         $producto = Producto::find($nuevoProductoId);
         $precioProducto = $producto->precio;
 
-        // Calcular el monto del detalle (precio del producto * cantidad)
         $detalle->monto = $precioProducto * $nuevaCantidad;
 
         $detalle->save();
 
-        // Actualizar el stock del producto según la diferencia en la cantidad
         $producto->stock -= $diferenciaCantidad;
         $producto->save();
 
-        // Actualizar el campo montoTotal del pedido correspondiente
         $pedido = Pedido::find($pedidoId);
         $pedido->actualizarMontoTotal();
 
-        // Redirigir a donde desees después de la actualización
         return redirect('/pedidos')->with('success', 'El detalle del pedido se ha actualizado exitosamente.');
     }
 
@@ -192,13 +173,10 @@ protected function validarDetallePedido(Request $request)
         $detalle = DetallePedido::find($id);
         $pedidoId = $detalle->pedido_id;
 
-        // Obtener la cantidad del detalle a eliminar
         $cantidadEliminada = $detalle->cantidad;
 
-        // Obtener el producto del detalle
         $producto = $detalle->producto;
 
-        // Actualizar el stock del producto al eliminar el detalle
         $producto->stock += $cantidadEliminada;
         $producto->save();
 

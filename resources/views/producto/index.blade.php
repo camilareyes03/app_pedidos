@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Categorias')
+@section('title', 'Productos')
 
 @section('content_header')
     <h1>Listado de Productos</h1>
@@ -41,18 +41,18 @@
                     </td>
                     <td>{{ $producto->categoria->nombre }}</td>
                     <td>
-                        <form class="formulario-eliminar" action="{{ route('productos.destroy', $producto->id) }}"
-                            method="POST">
+                        <form class="formulario-eliminar" action="{{ route('productos.destroy', $producto->id) }}" method="POST">
                             <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-info">
-                                <i class="fas fa-edit"></i> Editar
+                                <i class="fas fa-edit"></i>
                             </a>
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> Eliminar
+                                <i class="fas fa-trash"></i>
                             </button>
                         </form>
                     </td>
+
 
                 </tr>
             @endforeach

@@ -51,21 +51,21 @@
                         <td>{{ $persona->email }}</td>
                     @endif
                     <td>
-                        <form class="formulario-eliminar" action="{{ route('personas.destroy', $persona->id) }}"
-                            method="POST">
+                        <form class="formulario-eliminar" action="{{ route('personas.destroy', $persona->id) }}" method="POST">
                             <a href="{{ route('personas.show', $persona->id) }}" class="btn btn-info">
-                                <i class="fas fa-eye"></i> Ver Mas
+                                <i class="fas fa-eye"></i>
                             </a>
                             <a href="{{ route('personas.edit', $persona->id) }}" class="btn btn-warning">
-                                <i class="fas fa-edit"></i> Editar
+                                <i class="fas fa-edit"></i>
                             </a>
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> Eliminar
+                                <i class="fas fa-trash"></i>
                             </button>
                         </form>
                     </td>
+
 
                 </tr>
             @endforeach

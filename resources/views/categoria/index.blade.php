@@ -7,7 +7,8 @@
 @stop
 
 @section('content')
-    <a style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" href="categorias/create" class="btn btn-primary ">Registrar</a>
+    <a style="background-color: rgb(1, 130, 5); border: 1px solid rgb(1, 130, 5);" href="categorias/create"
+        class="btn btn-primary ">Registrar</a>
     <a href="{{ $pdfRoute }}" class="btn btn-danger"> <i class="fas fa-file-pdf"></i></a>
     <a href="{{ $csvRoute }}" class="btn btn-success"><i class="fa fa-file-excel"></i></a>
 
@@ -31,12 +32,12 @@
                         <form class="formulario-eliminar" action="{{ route('categorias.destroy', $categoria->id) }}"
                             method="POST">
                             <a href="{{ route('categorias.edit', $categoria->id) }}" class="btn btn-info">
-                                <i class="fas fa-edit"></i> Editar
+                                <i class="fas fa-edit"></i>
                             </a>
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> Eliminar
+                                <i class="fas fa-trash"></i>
                             </button>
                         </form>
                     </td>

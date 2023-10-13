@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DetallePedido;
 use App\Models\Pedido;
 use App\Models\Producto;
+use App\Models\Categoria;
 use App\Models\User;
 use Dompdf\Dompdf;
 use Illuminate\Http\Response;
@@ -20,6 +21,7 @@ class PedidoController extends Controller
     {
         $pedidos = Pedido::all();
         $productos = Producto::all();
+        $categorias = Categoria::all();
         if ($productos->isEmpty()) {
             return redirect()->route('productos.create')
                 ->with('warning', 'No tienes productos registrados. Debes crear al menos uno.');
@@ -34,8 +36,15 @@ class PedidoController extends Controller
             ];
         });
 
-        return view('pedido.index', compact('pdfLinks', 'productos', 'pedidos'));
+        return view('pedido.index', compact('pdfLinks', 'productos', 'pedidos', 'categorias'));
     }
+
+    public function cargarProductosPorCategoria($categoriaId)
+    {
+        $productos = Producto::where('categoria_id', $categoriaId)->get();
+        return response()->json($productos);
+    }
+
 
 
     public function proforma()
@@ -43,8 +52,8 @@ class PedidoController extends Controller
         $tipo = 'proforma';
         $pedidos = Pedido::where('tipo_pedido', 'proforma')->get();
         $productos = Producto::all();
+        $categorias = Categoria::all();
 
-        // Mapea los pedidos a sus enlaces de descarga de PDF
         $pdfLinks = $pedidos->map(function ($pedido) {
             return [
                 'pedido' => $pedido,
@@ -53,7 +62,7 @@ class PedidoController extends Controller
             ];
         });
 
-        return view('pedido.index', compact('pdfLinks', 'productos', 'pedidos'));
+        return view('pedido.index', compact('pdfLinks', 'productos', 'pedidos', 'categorias'));
     }
 
     public function oficial()
@@ -61,8 +70,8 @@ class PedidoController extends Controller
         $tipo = 'oficial';
         $pedidos = Pedido::where('tipo_pedido', 'oficial')->get();
         $productos = Producto::all();
+        $categorias = Categoria::all();
 
-        // Mapea los pedidos a sus enlaces de descarga de PDF
         $pdfLinks = $pedidos->map(function ($pedido) {
             return [
                 'pedido' => $pedido,
@@ -71,7 +80,7 @@ class PedidoController extends Controller
             ];
         });
 
-        return view('pedido.index', compact('pdfLinks', 'productos', 'pedidos'));
+        return view('pedido.index', compact('pdfLinks', 'productos', 'pedidos', 'categorias'));
     }
 
 
@@ -79,7 +88,7 @@ class PedidoController extends Controller
      * Show the form for creating a new resource.
      */
 
-     public function create()
+    public function create()
     {
         $clientes = User::where('tipo_usuario', 'cliente')->get();
         if ($clientes->isEmpty()) {
@@ -162,13 +171,11 @@ class PedidoController extends Controller
     {
         $this->validarDatos($request);
 
-        // Verificar si el tipo de pedido ha cambiado
         $tipoPedidoAnterior = $pedido->tipo_pedido;
         $tipoPedidoNuevo = $request->input('tipo_pedido');
 
         if ($tipoPedidoAnterior !== $tipoPedidoNuevo) {
             if ($tipoPedidoNuevo === 'oficial') {
-                // El tipo de pedido cambió a 'oficial', por lo que necesitamos actualizar el stock de los productos en los detalles del pedido
                 $detallesPedido = DetallePedido::where('pedido_id', $pedido->id)->get();
 
                 foreach ($detallesPedido as $detalle) {
@@ -177,7 +184,6 @@ class PedidoController extends Controller
                     $producto->save();
                 }
             } elseif ($tipoPedidoAnterior === 'oficial') {
-                // El tipo de pedido cambió de 'oficial' a otro tipo, por lo que necesitamos revertir la actualización del stock
                 $detallesPedido = DetallePedido::where('pedido_id', $pedido->id)->get();
 
                 foreach ($detallesPedido as $detalle) {
@@ -188,7 +194,6 @@ class PedidoController extends Controller
             }
         }
 
-        // Actualiza los campos del pedido con los datos del formulario
         $pedido->fecha = $request->input('fecha');
         $pedido->cliente_id = $request->input('cliente_id');
 
@@ -234,7 +239,6 @@ class PedidoController extends Controller
         $pedido = Pedido::find($id);
         $detalles = $pedido->detallePedido;
 
-        // Crear el contenido CSV para los detalles del pedido
         $csvData = '';
         $csvHeader = ['Producto', 'Cantidad', 'Monto'];
         $csvData .= implode(',', $csvHeader) . "\n";
@@ -247,7 +251,6 @@ class PedidoController extends Controller
             $csvData .= implode(',', $csvRow) . "\n";
         }
 
-        // Establecer las cabeceras de respuesta
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => "attachment; filename=pedido_{$id}_detalles.csv",
@@ -259,11 +262,4 @@ class PedidoController extends Controller
 
         return $response;
     }
-
-
-
-
-
-
-
 }
