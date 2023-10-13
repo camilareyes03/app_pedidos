@@ -262,25 +262,35 @@
                 success: function(response) {
                     $('#agregarProductoModal').modal('hide');
                     // Mostrar notificación de éxito
-                    Swal.fire(
-                        'Producto agregado',
-                        'El producto se ha agregado al pedido exitosamente.',
-                        'success'
-                    );
-                    // Petición AJAX para actualizar la tabla de detalles del pedido
-                    $.ajax({
-                        url: '/detallepedido/show/' + response.pedido_id,
-                        type: 'GET',
-                        success: function(response) {
-                            $('#detalles-pedido-table').DataTable().clear().rows.add(
-                                response).draw();
-                        },
-                        error: function(xhr) {
-                            // Manejar errores
+                    Swal.fire({
+                        title: 'Producto agregado',
+                        text: 'El producto se ha agregado al pedido exitosamente.',
+                        icon: 'success',
+                        willClose: function() {
+                            // Retrasa la recarga de la página por 2 segundos (2000 milisegundos)
+                            setTimeout(function() {
+                                location
+                            .reload(); // Recarga la página después del retraso
+                            }, 0);
+
+                            // Petición AJAX para actualizar la tabla de detalles del pedido
+                            $.ajax({
+                                url: '/detallepedido/show/' + response.pedido_id,
+                                type: 'GET',
+                                success: function(response) {
+                                    $('#detalles-pedido-table').DataTable()
+                                        .clear().rows.add(
+                                            response).draw();
+                                },
+                                error: function(xhr) {
+                                    // Manejar errores
+                                }
+                            });
                         }
                     });
                 },
             });
+
         });
     </script>
 
