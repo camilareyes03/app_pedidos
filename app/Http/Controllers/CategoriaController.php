@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\View;
 
 class CategoriaController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         $categorias = Categoria::all();
@@ -18,13 +21,17 @@ class CategoriaController extends Controller
         return view('categoria.index', compact('categorias', 'pdfRoute','csvRoute'));
     }
 
-
+/**
+ * Show the form for creating a new resource.
+ */
     public function create()
     {
         return view('categoria.create');
     }
 
-
+/**
+ *  Store a newly created resource in storage.
+ */
     public function store(Request $request)
     {
         $this->validarDatos($request);
@@ -38,13 +45,18 @@ class CategoriaController extends Controller
         return redirect('categorias')->with('success', 'La categoría se ha guardado exitosamente.');
     }
 
-
+    /**
+     * Display the specified resource.
+     */
     public function edit($id)
     {
         $categoria = Categoria::find($id);
         return view('categoria.edit', compact('categoria'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, string $id)
     {
         $categoria = Categoria::find($id);
@@ -77,6 +89,9 @@ class CategoriaController extends Controller
         ]);
     }
 
+    /**
+     * Generar PDF
+     */
     public function generarPdf()
     {
         $categorias = Categoria::all();
@@ -89,6 +104,9 @@ class CategoriaController extends Controller
         return $dompdf->stream("Categorias.pdf");
     }
 
+   /**
+    * Generar CSV
+    */
     public function generarCsv()
     {
         $categorias = Categoria::all();
@@ -104,7 +122,6 @@ class CategoriaController extends Controller
             $csvData .= implode(',', $csvRow) . "\n";
         }
 
-        // Establecer las cabeceras de respuesta
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename=Categorias.csv',

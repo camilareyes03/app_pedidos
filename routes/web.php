@@ -62,3 +62,4 @@ Route::resource('productos', 'App\Http\Controllers\ProductoController')->middlew
 Route::get('/producto/pdf', 'App\Http\Controllers\ProductoController@generarPdf')->name('producto.pdf');
 Route::get('/producto/csv', 'App\Http\Controllers\ProductoController@generarCsv')->name('producto.csv');
 
+Route::get('/cargar-productos-por-categoria/{categoria}', 'App\Http\Controllers\PedidoController@cargarProductosPorCategoria');

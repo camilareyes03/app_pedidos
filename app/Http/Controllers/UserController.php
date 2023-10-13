@@ -71,7 +71,6 @@ class UserController extends Controller
             $persona->password = null;
         } else {
             $persona->email = $request->input('email');
-            // Encriptar la contraseña antes de guardarla
             $persona->password = bcrypt($request->input('password'));
         }
 
@@ -107,14 +106,12 @@ class UserController extends Controller
     {
         $this->validarDatos($request);
 
-        // Recuperar el modelo existente desde la base de datos
         $persona = User::find($id);
 
         if (!$persona) {
             return redirect('personas')->with('error', 'Persona no encontrada.');
         }
 
-        // Actualizar los atributos del modelo con los nuevos valores
         $persona->name = $request->input('name');
         $persona->ci = $request->input('ci');
         $persona->telefono = $request->input('telefono');
@@ -135,14 +132,11 @@ class UserController extends Controller
         } else {
             $persona->email = $request->input('email');
 
-            // Verificar si la contraseña se está actualizando
             if ($request->input('password')) {
-                // Encriptar la nueva contraseña antes de guardarla
                 $persona->password = bcrypt($request->input('password'));
             }
         }
 
-        // Guardar el modelo actualizado en la base de datos
         $persona->save();
 
         return redirect('personas')->with('success', 'La persona se ha actualizado exitosamente.');
@@ -210,7 +204,6 @@ class UserController extends Controller
         } else {
             $users = User::where('tipo_usuario', $tipo)->get();
         }
-        // Crear el contenido CSV
         $csvData = '';
         $csvHeader = ['ID', 'Nombre Completo', 'Telefono', 'CI', 'Tipo de Usuario'];
         $csvData .= implode(',', $csvHeader) . "\n";
@@ -225,7 +218,6 @@ class UserController extends Controller
             $csvData .= implode(',', $csvRow) . "\n";
         }
 
-        // Establecer las cabeceras de respuesta
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename=listado_' . $tipo . '_usuarios.csv',
@@ -234,10 +226,8 @@ class UserController extends Controller
             'Expires' => '0',
         ];
 
-        // Crear la respuesta con el contenido CSV
         $response = new Response($csvData, 200, $headers);
 
-        // Devolver la respuesta
         return $response;
     }
 

@@ -95,22 +95,18 @@
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
+                            <label for="categoria_id">Categoría:</label>
+                            <select class="form-control" id="categoria_id" name="categoria_id">
+                                <option value="nulo">Seleccione una Categoría</option>
+                                @foreach ($categorias as $categoria)
+                                    <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group" id="productos-div">
                             <label for="producto_id">Producto:</label>
                             <select class="form-control" id="producto_id" name="producto_id">
-                                <option value="nulo">Seleccione un Producto</option>
-                                @foreach ($productos as $producto)
-                                    @if ($producto->stock == 0)
-                                        <option value="{{ $producto->id }}" data-precio="{{ $producto->precio }}"
-                                            data-foto="{{ asset($producto->foto) }}" disabled>
-                                            {{ $producto->nombre }} - No hay stock
-                                        </option>
-                                    @else
-                                        <option value="{{ $producto->id }}" data-precio="{{ $producto->precio }}"
-                                            data-foto="{{ asset($producto->foto) }}">
-                                            {{ $producto->nombre }} - Stock: {{ $producto->stock }}
-                                        </option>
-                                    @endif
-                                @endforeach
+                                <!-- Opciones de productos se cargarán aquí dinámicamente -->
                             </select>
                         </div>
                         <div class="form-group">
@@ -125,7 +121,6 @@
                             <label for="foto">Foto:</label>
                             <img id="foto" src="" alt="Foto del producto" width="100" height="100">
                         </div>
-
                         <input type="hidden" id="pedido_id" name="pedido_id">
                     </div>
                     <div class="modal-footer">
@@ -136,8 +131,6 @@
             </div>
         </div>
     </div>
-
-
 @stop
 
 @section('css')
@@ -225,26 +218,19 @@
     </script>
     <script>
         $(document).ready(function() {
-            // Al cargar la página, ocultamos el campo de precio y la imagen del producto
             $('#precio').val('');
-            $('#foto').attr('src', ''); // Establece el atributo src a una cadena vacía
-
+            $('#foto').attr('src', '');
             $('#producto_id').change(function() {
-                // Cuando cambia la selección de producto
                 var selectedOption = $(this).find(':selected');
                 var precio = selectedOption.data('precio');
                 var foto = selectedOption.data('foto');
-
-                // Actualizamos el campo de precio y la imagen del producto
                 $('#precio').val(precio);
-                $('#foto').attr('src', foto); // Actualiza el atributo src
+                $('#foto').attr('src', foto);
             });
         });
     </script>
     <script>
         $('#pedidos').DataTable();
-
-        // Mostrar el modal de agregar producto al pedido
         $('.btn-detalles').click(function() {
             var pedidoId = $(this).data('pedido-id');
             $('#pedido_id').val(pedidoId);
@@ -254,14 +240,12 @@
             event.preventDefault();
             var formData = $(this).serialize();
 
-            // Petición AJAX para agregar el producto al pedido
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
                 data: formData,
                 success: function(response) {
                     $('#agregarProductoModal').modal('hide');
-                    // Mostrar notificación de éxito
                     Swal.fire({
                         title: 'Producto agregado',
                         text: 'El producto se ha agregado al pedido exitosamente.',
@@ -269,10 +253,9 @@
                         willClose: function() {
                             setTimeout(function() {
                                 location
-                            .reload();
+                                    .reload();
                             }, 0);
 
-                            // Petición AJAX para actualizar la tabla de detalles del pedido
                             $.ajax({
                                 url: '/detallepedido/show/' + response.pedido_id,
                                 type: 'GET',
@@ -282,7 +265,6 @@
                                             response).draw();
                                 },
                                 error: function(xhr) {
-                                    // Manejar errores
                                 }
                             });
                         }
@@ -292,6 +274,36 @@
 
         });
     </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#categoria_id').change(function() {
+                var categoriaId = $(this).val();
+
+                if (categoriaId != 'nulo') {
+                    $.ajax({
+                        url: '/cargar-productos-por-categoria/' + categoriaId,
+                        type: 'GET',
+                        success: function(productos) {
+                            var options =
+                            '<option value="nulo">Seleccione un Producto</option>';
+                            productos.forEach(function(producto) {
+                                options += '<option value="' + producto.id +
+                                    '" data-precio="' + producto.precio +
+                                    '" data-foto="' + producto.foto + '">' + producto
+                                    .nombre + ' - Stock: ' +
+                                    producto.stock + '</option>';
+                            });
+                            $('#productos-div select').html(options);
+                        }
+                    });
+                } else {
+                    $('#productos-div select').empty();
+                }
+            });
+        });
+    </script>
+
 
 
 @stop

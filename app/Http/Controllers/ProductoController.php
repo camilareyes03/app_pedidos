@@ -155,7 +155,6 @@ class ProductoController extends Controller
     public function generarCsv()
     {
         $productos = Producto::all();
-        // Crear el contenido CSV
         $csvData = '';
         $csvHeader = ['ID', 'Nombre', 'Precio', 'Stock'];
         $csvData .= implode(',', $csvHeader) . "\n";
@@ -169,7 +168,6 @@ class ProductoController extends Controller
             $csvData .= implode(',', $csvRow) . "\n";
         }
 
-        // Establecer las cabeceras de respuesta
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename=Catalogo_Productos.csv',
