@@ -267,10 +267,9 @@
                         text: 'El producto se ha agregado al pedido exitosamente.',
                         icon: 'success',
                         willClose: function() {
-                            // Retrasa la recarga de la página por 2 segundos (2000 milisegundos)
                             setTimeout(function() {
                                 location
-                            .reload(); // Recarga la página después del retraso
+                            .reload();
                             }, 0);
 
                             // Petición AJAX para actualizar la tabla de detalles del pedido
