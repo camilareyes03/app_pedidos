@@ -70,6 +70,10 @@ class CategoriaController extends Controller
         return redirect('categorias')->with('edit-success', 'La categoría se ha actualizado exitosamente.');
     }
 
+
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(string $id)
     {
         $categoria = Categoria::find($id);
@@ -77,6 +81,9 @@ class CategoriaController extends Controller
         return redirect('categorias')->with('eliminar', 'ok');
     }
 
+    /**
+     * Validar datos
+     */
     private function validarDatos(Request $request)
     {
         $request->validate([
